@@ -9,8 +9,7 @@ The UBER of collaborative party game
 When a new input is displayed it can change the light color. 
 
 ### Technical solution
-Each input type can have it own mqtt topic. This topic will be used to sync the game with your lights. 
-
+The web client is going to make a request (undefined right now) for each input type. 
 
 ## Database technical solution 
 ¯\\(◉‿◉)/¯
@@ -19,7 +18,7 @@ Each input type can have it own mqtt topic. This topic will be used to sync the 
 Flask because python is easy. 
 
 ## Process 
-The web server is just going to send the data from the database to the client. The rest (text to speech, mqtt, ...) will be handled by the client (js). 
+The web server is just going to send the data from the database to the client. The rest (text to speech, lighting, ...) will be handled by the client (js). 
 
 
 
@@ -45,7 +44,7 @@ Like :
 - invited players
 - input types
   * name 
-  * mqtt_topic
+  * post request (light)
 
 ### Input creation
 This page allow the player to create inputs for the party. 
@@ -107,6 +106,7 @@ The inputs will change automatically depending on the number of inputs.
 | type_id  | number [unique]  |   |
 | input_id  | number  |   |
 | type_name  | string  |   |
-| mqtt_topic  | string [optional] |   |
+| light_server_ip  | string [optional] |   |
+| post_request  | string [optional] |   |
 
 
