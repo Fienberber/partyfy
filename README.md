@@ -1,17 +1,32 @@
 # partyfy
 The UBER of collaborative party game
 
+
+
 # Features
 
-## Name
+## Light animation
+When a new input is displayed it can change the light color. 
 
 ### Technical solution
+Each input type can have it own mqtt topic. This topic will be used to sync the game with your lights. 
 
 
+## Database technical solution 
+¯\\(◉‿◉)/¯
+
+## Web server
+Flask because python is easy. 
+
+## Process 
+The web server is just going to send the data from the database to the client. The rest (text to speech, mqtt, ...) will be handled by the client (js). 
 
 
 
 # Web pages 
+
+### Login
+Login page. 
 
 ### Party selection 
 Page accessed by a player. It list the parties your in and the people invited to this party.
@@ -40,6 +55,12 @@ The UI will allow the user to see the full input list (his input).
 On the creation side, you can select n random people OR just write whatever you want. A button will be added to read the input as it will during the game. 
 
 ### Game page
+
+Just display the input content (can add the random players list). 
+
+The player can go to the next one and the previous one. 
+
+The inputs will change automatically depending on the number of inputs.
 
 
 # Database
