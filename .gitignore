@@ -128,5 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Secrets
+secrets.py
+
 # Fucking macos
 .DS_Store
