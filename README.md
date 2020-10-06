@@ -3,6 +3,15 @@ The UBER of collaborative party game
 
 
 # Usage
+```
+git clone https://github.com/Fienberber/partyfy
+cd partyfy
+```
+Optional: Create a venv
+```
+python3 -m venv venv
+source venv/bin/activate
+```
 Install requirements and start the server
 ```
 pip install -r requirements.txt
