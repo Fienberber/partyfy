@@ -2,6 +2,14 @@
 The UBER of collaborative party game
 
 
+# Usage
+Install requirements and start the server
+```
+pip install -r requirements.txt
+python3 main.py
+```
+Now access http://127.0.0.1:8000
+
 
 # Features
 
