@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Nativ Example</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body onload="loadUpdate()" onresize="displayMenu()">
+
+
+<div class="row">
+  <div class="col-1">
+     <span class="openbtn left" onclick="openNav()">&#9776;</span>
+  </div>
+  <div class="col-10">
+     <h1 class="center" >Partyfy input editor</h1>
+  </div>
+  <div class="col-1">
+     <button class="right btn" type="button">Save</button>
+  </div>
+</div>
+
+<div >
+	
+	
+	
+</div>
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="#">This is a primary list group item</a>
+  <a href="#">This is a primary list group item</a>
+  <a href="#">This is a primary list group item</a>
+  <a href="#">This is a primary list group item</a>
+  <a href="#">About</a>
+  <a href="#">This is a primary list group item</a>
+  <a href="#">Clients</a>
+  <a href="#">This is a primary list group item</a>
+  <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Clients</a>
+  <a href="#">This is a primary list group item</a>
+  <a href="#">About</a>
+  <a href="#">Services</a>
+  <a href="#">Clients</a>
+  <a href="#">Contact</a>
+  <a href="#">This is a primary list group item</a>
+  <a href="#">Services</a>
+  <a href="#">Clients</a>
+  <a href="#">This is a primary list group item</a>
+</div>
+
+
+
+
+
+<br>
+<br>
+<br>
+
+
+<div class="row">
+  <div class="col-3">
+     
+  </div>
+
+  <div class="col-6 center">
+
+		<input type="text" id="input_title" name="input_title" placeholder="Title">
+		<br><br>
+
+		<div class="center_flex">
+		<div class="select">
+			<label for="sel1">Number of random players:</label>
+			<br>
+			<select class="form-control" id="sel1">
+			</select>
+		</div>
+		</div>
+		<br><br>
+		<input type="text" id="input_text" name="input_title" onkeyup="updateRender()" placeholder="Input content">
+		<br><br>
+
+
+		<button onclick="andRandomAnchor()" type="submit" class="btn">Add anchor</button>
+		<button onclick="tts()" type="submit" class="btn">Read input</button>
+
+		<br>
+		<h1 class="render" id="render_text">...</h1>
+
+  </div>
+
+  <div class="col-3 right">
+    <div class="aside">
+      <h2>Example of nice Input</h2>
+      <p>[players] do a great picture to save this moment.</p>
+      <h2>An other none ?</h2>
+      <p>If you've already defrauded the metro, drink 2 sips</p>
+      <h2>Lastly</h2>
+      <p>Don't forget to thanks your hosts and the dev of this game (it took a lot of effort).</p>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+
+var players = ["Laure", "Nath", "Louise", "Théo", "LM", "Yoyo"];
+
+function loadUpdate(){
+	displayMenu();
+	var select = document.getElementById("sel1");
+	for (i = 0; i < players.length; i++) { 
+	 	var option = document.createElement("option");
+		option.text = i;
+		select.add(option);
+	}	
+}
+
+function displayMenu(){
+	if($(window).width()>768){
+		openNav();
+	}
+	else closeNav();
+}
+
+function tts() {
+  var msg = new SpeechSynthesisUtterance();
+  msg.text = document.getElementById("render_text").textContent;
+  window.speechSynthesis.speak(msg);}
+
+
+function openNav() {
+	if($(window).width()>768) document.getElementById("mySidenav").style.width = "25%";
+	else document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+}
+
+
+function updateRender(){
+	var input_text = document.getElementById("input_text").value;
+	if(input_text.includes("[players]")){
+		var select = document.getElementById("sel1");
+		var numPlayers = select.options[select.selectedIndex].value;
+		if(numPlayers < 1) alert("Please select the number of players");
+		var subPlayers = players.slice();
+		var outputText = "";
+		for (var i = 1; i <= numPlayers; i++) {
+			var random = Math.floor(Math.random() * subPlayers.length);
+			if(i == 1)outputText += subPlayers[random];
+			else if(i == numPlayers) outputText += " et " + subPlayers[random];
+			else outputText += ", " + subPlayers[random];
+
+			subPlayers.splice(random, 1);
+		}
+		var str = document.getElementById("input_text").value
+		document.getElementById("render_text").textContent = str.replace("[players]", outputText);
+	}
+	else {
+		document.getElementById("render_text").textContent = document.getElementById("input_text").value;
+	}	
+}
+
+function andRandomAnchor(){
+	document.getElementById("input_text").value = document.getElementById("input_text").value + "[players]";
+}
+
+</script>
+
+</body>
+</html>
+
