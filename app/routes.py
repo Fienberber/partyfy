@@ -1,6 +1,7 @@
 from flask import request, render_template
 from app import app
 from app.user import User
+from os import mkdir
 
 
 @app.route('/', methods=['GET'])
@@ -23,7 +24,9 @@ def login():
 
         return render_template('login.jinja2')
 
+
 @app.route('/setup', methods=['GET'])
 def setup():
+    mkdir('db')
     User.dbSetup()
     return "Setup complete"
