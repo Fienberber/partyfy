@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Nativ Example</title>
+  <title>Partyfy input editor</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -10,52 +10,59 @@
 <body onload="loadUpdate()" onresize="displayMenu()">
 
 
-<div class="row">
-  <div class="col-1">
-     <span class="openbtn left" onclick="openNav()">&#9776;</span>
-  </div>
-  <div class="col-10">
-     <h1 class="center" >Partyfy input editor</h1>
-  </div>
-  <div class="col-1">
-     <button class="right btn" type="button">Save</button>
-  </div>
-</div>
 
-<div >
-	
-	
-	
-</div>
 
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="#">This is a primary list group item</a>
-  <a href="#">This is a primary list group item</a>
-  <a href="#">This is a primary list group item</a>
-  <a href="#">This is a primary list group item</a>
-  <a href="#">About</a>
-  <a href="#">This is a primary list group item</a>
-  <a href="#">Clients</a>
-  <a href="#">This is a primary list group item</a>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">This is a primary list group item</a>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
-  <a href="#">This is a primary list group item</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">This is a primary list group item</a>
+  <h2 href="#">Your inputs</h2>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
+  <a href="#">This is a input title</a>
 </div>
 
 
 
 
 
+<span class="openbtn left" onclick="openNav()">&#9776;</span>
+<button class="btn right" type="button">home</button>
+<br>
+<div class="col-12">
+<h1 class="center" >Party Name (none right now)</h1>
+</div>
 <br>
 <br>
 <br>
@@ -84,12 +91,14 @@
 		<br><br>
 
 
-		<button onclick="andRandomAnchor()" type="submit" class="btn">Add anchor</button>
+		<button onclick="addRandomAnchor()" type="submit" class="btn">Add anchor</button>
 		<button onclick="tts()" type="submit" class="btn">Read input</button>
 
 		<br>
 		<h1 class="render" id="render_text">...</h1>
+		<br>
 
+		<button class="btn" type="button">Save</button>
   </div>
 
   <div class="col-3 right">
@@ -101,6 +110,11 @@
       <h2>Lastly</h2>
       <p>Don't forget to thanks your hosts and the dev of this game (it took a lot of effort).</p>
     </div>
+    <div class="leaderboard" id="leaderboard">
+    	<br>
+    	<br>
+      <h2>Leader Board :</h2>
+    </div>
   </div>
 </div>
 
@@ -110,32 +124,49 @@
 <script>
 
 var players = ["Laure", "Nath", "Louise", "Théo", "LM", "Yoyo"];
+var playersInputCount = [10, 8, 12, 7, 15, 13];
+
 
 function loadUpdate(){
 	displayMenu();
+	updateLeaderBoard();
+	updatePlayerNumber();
+}
+
+function updatePlayerNumber(){
 	var select = document.getElementById("sel1");
-	for (i = 0; i < players.length; i++) { 
+	for (i = 0; i < players.length; i++) {
 	 	var option = document.createElement("option");
 		option.text = i;
 		select.add(option);
-	}	
+	}
 }
 
 function displayMenu(){
-	if($(window).width()>768){
+	if($(window).width()>1000){
 		openNav();
 	}
 	else closeNav();
 }
 
+function updateLeaderBoard(){
+	var div = document.getElementById("leaderboard");
+	for (i = 0; i < players.length; i++) { 
+		var p = document.createElement("p"); 
+		p.innerHTML = players[i] + ": " + playersInputCount[i]; 
+		div.appendChild(p);
+	}	
+}
+
 function tts() {
   var msg = new SpeechSynthesisUtterance();
   msg.text = document.getElementById("render_text").textContent;
-  window.speechSynthesis.speak(msg);}
+  window.speechSynthesis.speak(msg);
+}
 
 
 function openNav() {
-	if($(window).width()>768) document.getElementById("mySidenav").style.width = "25%";
+	if($(window).width()>1000) document.getElementById("mySidenav").style.width = "25%";
 	else document.getElementById("mySidenav").style.width = "250px";
 }
 
@@ -168,7 +199,8 @@ function updateRender(){
 	}	
 }
 
-function andRandomAnchor(){
+
+function addRandomAnchor(){
 	document.getElementById("input_text").value = document.getElementById("input_text").value + "[players]";
 }
 

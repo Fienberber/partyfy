@@ -9,6 +9,7 @@ body {
   background-color: var(--main-bg-color);
   color : var(--main-ft-color);
   font-family: "Geneva", sans-serif;
+  margin: 20px;
 }
 
 input {
@@ -51,6 +52,14 @@ input {
 
 .sidenav a:hover {
   color: var(--main-bg-color);
+}
+
+.sidenav h2 {
+  padding: 8px 8px 8px 12px;
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+  display: block;
 }
 
 .sidenav .closebtn {
@@ -210,10 +219,6 @@ select {
 .select:hover::after {
   color: var(--main-bt-color);
 }
-
-
-
-
 
 
 
