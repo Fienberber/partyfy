@@ -22,7 +22,7 @@ def login():
             if user.verifyPassword(data['password']):
                 return "Logged in"
 
-        return render_template('login.jinja2')
+        return "Invalid email/password"
 
 
 @app.route('/signup', methods=['POST'])
