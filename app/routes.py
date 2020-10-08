@@ -28,6 +28,9 @@ def login():
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.form.to_dict()
+    if User.query.filter_by(email=data["email"]).first() is not None:
+        return "User already exists"
+
     user = User(username=data["username"],
                 email=data["email"],
                 password=data["password"])
