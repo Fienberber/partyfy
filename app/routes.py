@@ -25,6 +25,16 @@ def login():
         return render_template('login.jinja2')
 
 
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.form.to_dict()
+    user = User(username=data["username"],
+                email=data["email"],
+                password=data["password"])
+    user.saveUser()
+    return "User created"
+
+
 @app.route('/setup', methods=['GET'])
 def setup():
     mkdir('db')
