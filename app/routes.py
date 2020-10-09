@@ -58,7 +58,7 @@ def partyCreator():
 
         if(dict_cntnt["isUpdate"]=="True"):
             _id = dict_cntnt["id"]
-            partie = Party.query.filter_by(creator_id=1,id=_id).first()
+            partie = Party.query.filter_by(creator_id=session.get("user_id"),id=_id).first()
             partie.setTitle(dict_cntnt["partyTitle"])
             partie.deleteInputTypes()
             partyID = _id
@@ -81,7 +81,7 @@ def partyCreator():
 @app.route('/partyInfo', methods=['POST'])
 def partyInfo():
     _id = int(request.data.decode("utf-8"))
-    partie = Party.query.filter_by(creator_id=1,id=_id).first()
+    partie = Party.query.filter_by(creator_id=session.get("user_id"),id=_id).first()
     inputTypes = InputType.query.filter_by(party_id=_id).all()
 
     returnJson = jsonify(party=[partie.serialize], inputTypes=[i.serialize for i in inputTypes])
