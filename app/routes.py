@@ -16,15 +16,16 @@ def index():
 
 @app.route('/createInput', methods=['GET'])
 def createInput():
-    par1 = Party(1,1,"Great Party")
+    par1 = Party(1, 1, "Great Party")
     par1.save()
-    par2 = Party(2,1,"Nice Party")
+    par2 = Party(2, 1, "Nice Party")
     par2.save()
-    par3 = Party(3,1,"New year")
+    par3 = Party(3, 1, "New year")
     par3.save()
-    par4 = Party(4,1,"John birthday")
+    par4 = Party(4, 1, "John birthday")
     par4.save()
     return "Done"
+
 
 @app.route('/partyList', methods=['POST'])
 def partyList():
@@ -39,7 +40,6 @@ def removeParty():
     d = Party.query.filter_by(id=data).first()
     d.delete()
     return "ok"
-
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -73,7 +73,11 @@ def signup():
 
 @app.route('/setup', methods=['GET'])
 def setup():
-    mkdir('db')
+    try:
+        mkdir('db')
+    except FileExistsError:
+        pass
+
     User.dbSetup()
     Party.dbSetup()
     return "Setup complete"
