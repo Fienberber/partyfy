@@ -41,3 +41,17 @@ $('.tab a').on('click', function (e) {
   $(target).fadeIn(600);
   
 });
+
+$("#signup-form").on('submit', function(e) {
+	e.preventDefault();
+	$.post('/signup', $("#signup-form").serialize(), function(data) {
+	  alert(data);
+	});
+});
+
+$("#login-form").on('submit', function(e) {
+	e.preventDefault();
+	$.post('/login', $("#login-form").serialize(), function(data) {
+	  alert(data);
+	});
+});

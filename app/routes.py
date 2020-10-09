@@ -1,8 +1,8 @@
-from flask import request, render_template
+from flask import request, render_template, jsonify
 from app import app
 from app.user import User
 from app.party import Party
-from flask import jsonify
+from os import mkdir
 
 
 @app.route('/', methods=['GET'])
@@ -55,10 +55,25 @@ def login():
             if user.verifyPassword(data['password']):
                 return "Logged in"
 
-        return render_template('login.jinja2')
+        return "Invalid email/password"
+
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.form.to_dict()
+    if User.query.filter_by(email=data["email"]).first() is not None:
+        return "User already exists"
+
+    user = User(username=data["username"],
+                email=data["email"],
+                password=data["password"])
+    user.saveUser()
+    return "User created"
+
 
 @app.route('/setup', methods=['GET'])
 def setup():
+    mkdir('db')
     User.dbSetup()
     Party.dbSetup()
     return "Setup complete"
