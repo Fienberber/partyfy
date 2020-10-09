@@ -134,10 +134,12 @@ dt{
   margin: 20px 20px 20px 0px;
 }
 
+.inputDiv {
+  background-color: red;
+}
 
 span.input {
-  width: 170px;
-  margin: 28px 0px 28px 28px;
+  margin: 28px;
 }
 
 

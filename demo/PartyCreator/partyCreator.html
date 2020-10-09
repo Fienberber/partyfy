@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Partyfy home page</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="party.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body onload="loadUpdate()">
+
+
+<button class="btn right" onclick="window.location.href='logout';" type="button">logout</button>
+<button class="btn right" type="button">home</button>
+
+<br>
+<div class="col-12">
+
+<h1 class="center" >Party creation:</h1>
+</div>
+<br>
+<br>
+<br>
+
+
+<div class="row">
+  <div class="col-1">
+     
+  </div>
+
+  <div class="col-10 center">
+    <input type="text" id="party_name" name="party_name" placeholder="Party name">
+    <p> Add a players : </p>
+    <input type="text" id="player_name" class="player_name" name="player_name" placeholder="Username">
+    <input type="text" id="player_email" class="player_email" name="player_email" placeholder="Email">
+    <a class="addButton" onclick="addPlayer()"> + </a>
+    <br>
+    <div class="aside center">
+     <dl class="playerList" id="playerList">
+       <dt><a class='playerInfo'> Laure - laure.guillaume@orange.fr </a><a class='removePlayer' onclick='removePlayer(this)'> &times; </a></dt>
+       <dt><a class='playerInfo'> Théo - theo.fieber@hotmail.fr</a> <a class='removePlayer' onclick='removePlayer(this)'> &times; </a></dt>
+     </dl>
+    </div>
+    <br>
+    <button class="btn center" type="button" onclick="saveParty()">save the Party</button>
+    <br>
+    <br>
+
+    
+
+		
+  </div>
+
+  <div class="col-1 right">
+    
+  </div>
+</div>
+
+
+
+
+<script>
+var parties = ["New Year","Birthday","Esaip","Casual"]
+var partiesId = [1,2,3,4]
+var partiesInputCount = [80, 50, 120, 123];
+
+
+function addPlayer(){
+ 
+  var dl = document.getElementById("playerList");
+  var username = document.getElementById("player_name").value;
+  var email = document.getElementById("player_email").value;
+  
+  if(!ValidateEmail(email))return;
+
+  var dt = document.createElement("dt"); 
+  dt.classList.add('player');
+  dt.innerHTML = "<a class='playerInfo'>"+ username + " - " + email + "</a>" + "<a class='removePlayer' onclick='removePlayer(this)'> &times; </a>";
+  dl.appendChild(dt);
+
+  document.getElementById("player_name").value = "";
+  document.getElementById("player_email").value = "";
+}
+
+function saveParty(){
+  if(!document.getElementById("party_name").value){
+    alert("Name your party !")
+    return
+  }
+  var content = getPlayers();
+  alert(getPlayers());
+
+  var xhttp;
+  xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      window.location.href = this.responseText;
+    }
+  };
+  xhttp.open("POST", "newParty", true);
+  xhttp.send(content);
+}
+
+function getPlayers(){
+  var output = "";
+  output += document.getElementById("party_name").value + " : [";
+  var dl = document.getElementsByClassName("playerInfo");
+  for (var i = 0; i < dl.length; i+=1) {
+    output += dl[i].innerHTML + ",";
+  }
+  output += "]";
+  return output
+}
+
+
+function removePlayer(e){
+  e.parentNode.remove();
+}
+
+
+function ValidateEmail(mail) 
+{
+ if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail))
+  {
+    return (true)
+  }
+    alert("You have entered an invalid email address!")
+    return (false)
+}
+
+
+function loadUpdate(){
+	
+}
+
+function updatePartyList2(data){
+  var dl = document.getElementById("partyList");
+  while (dl.firstChild) {
+    dl.removeChild(dl.firstChild);
+  }
+  for (i = 0; i < data["json_list"].length; i++) { 
+    var dt = document.createElement("dt"); 
+    dt.classList.add('party');
+    //dt.innerHTML = data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
+    text =  data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
+    createSpan(dt,text)
+    createEditButton(dt,data["json_list"][i]["id"], "edit")
+    createRemoveButton(dt,data["json_list"][i]["id"], "remove")
+
+    dl.appendChild(dt);
+  } 
+}
+
+function createSpan(context, value) {
+    var button = document.createElement("span");
+    button.innerHTML = value;
+    button.classList.add('input');
+    button.classList.add('left');
+    context.appendChild(button);
+}
+
+function createEditButton(context, func, value) {
+    var button = document.createElement("input");
+    button.type = "button";
+    button.value = value;
+    button.onclick = function() { window.location.href = 'edit#' + func; };
+    button.classList.add('btn');
+    button.classList.add('input_btn');
+    context.appendChild(button);
+}
+
+function createRemoveButton(context, func, value) {
+    var button = document.createElement("input");
+    button.type = "button";
+    button.value = value;
+    button.onclick = function() { remove(func); };
+    button.classList.add('btn');
+    button.classList.add('input_btn');
+    button.classList.add('right');
+    context.appendChild(button);
+}
+
+
+</script>
+
+</body>
+</html>
+
