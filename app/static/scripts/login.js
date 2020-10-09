@@ -42,13 +42,15 @@ $('.tab a').on('click', function (e) {
   
 });
 
-$("#signup-btn").on('click', function(e) {
+$("#signup-form").on('submit', function(e) {
+	e.preventDefault();
 	$.post('/signup', $("#signup-form").serialize(), function(data) {
 	  alert(data);
 	});
 });
 
-$("#login-btn").on('click', function(e) {
+$("#login-form").on('submit', function(e) {
+	e.preventDefault();
 	$.post('/login', $("#login-form").serialize(), function(data) {
 	  alert(data);
 	});
