@@ -45,13 +45,26 @@ $('.tab a').on('click', function (e) {
 $("#signup-form").on('submit', function(e) {
 	e.preventDefault();
 	$.post('/signup', $("#signup-form").serialize(), function(data) {
-	  alert(data);
-	});
+		title = $("#signup > h1");
+		title.text(data.msg);
+		if (data.success) {
+			title.css('color', '#179b77');
+		} else {
+			title.css('color', 'red');
+		}
+	}, dataType="json");
 });
 
 $("#login-form").on('submit', function(e) {
 	e.preventDefault();
 	$.post('/login', $("#login-form").serialize(), function(data) {
-	  alert(data);
-	});
+		title = $("#login > h1");
+		title.text(data.msg);
+		if (data.success) {
+			title.css('color', '#179b77');
+			setTimeout(function() { window.location = '/'; }, 1000);
+		} else {
+			title.css('color', 'red');
+		}
+	}, dataType="json");
 });
