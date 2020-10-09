@@ -13,12 +13,6 @@ class InputType(db.Model):
     url = db.Column(db.String(80), unique=False, nullable=True)
 
 
-    def __init__(self, _party_id, _name, _url):
-        self.party_id = _party_id
-        self.name = _name
-        self.url = _url
-
-
     @staticmethod
     def dbSetup():
         db.create_all()
