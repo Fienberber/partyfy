@@ -74,7 +74,7 @@ def signup():
 @app.route('/setup', methods=['GET'])
 def setup():
     try:
-        mkdir('db')
+        mkdir('app/db')
     except FileExistsError:
         pass
 
