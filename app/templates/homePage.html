@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Partyfy home page</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="{{ url_for('static',filename='styles/home.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body onload="loadUpdate()">
+
+
+<button class="btn right" onclick="window.location.href='logout';" type="button">logout</button>
+
+<button class="btn right" onclick="getParties()" type="button">updateInputs</button>
+<br>
+<div class="col-12">
+
+<h1 class="center" >Welcome to Partyfy !</h1>
+</div>
+<br>
+<br>
+<br>
+
+
+<div class="row">
+  <div class="col-3">
+     
+  </div>
+
+  <div class="col-6 center">
+    <button class="btn center" type="button">Create a new Party</button>
+    <br>
+    <br>
+		<h2 class="render" id="render_text">Your parties:</h2>
+
+    <div class="aside center">
+     <dl class="partyList" id="partyList">
+     </dl>
+    </div>
+
+		
+  </div>
+
+  <div class="col-3 right">
+    
+  </div>
+</div>
+
+
+
+
+<script>
+var parties = ["New Year","Birthday","Esaip","Casual"]
+var partiesId = [1,2,3,4]
+var partiesInputCount = [80, 50, 120, 123];
+
+
+function loadUpdate(){
+	getParties();
+}
+
+function updatePartyList2(data){
+  var dl = document.getElementById("partyList");
+  while (dl.firstChild) {
+    dl.removeChild(dl.firstChild);
+  }
+  for (i = 0; i < data["json_list"].length; i++) { 
+    var dt = document.createElement("dt"); 
+    dt.classList.add('party');
+    //dt.innerHTML = data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
+    text =  data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
+    createSpan(dt,text)
+    createEditButton(dt,data["json_list"][i]["id"], "edit")
+    createRemoveButton(dt,data["json_list"][i]["id"], "remove")
+
+    dl.appendChild(dt);
+  } 
+}
+
+function createSpan(context, value) {
+    var button = document.createElement("span");
+    button.innerHTML = value;
+    button.classList.add('input');
+    button.classList.add('left');
+    context.appendChild(button);
+}
+
+function createEditButton(context, func, value) {
+    var button = document.createElement("input");
+    button.type = "button";
+    button.value = value;
+    button.onclick = function() { window.location.href = 'edit#' + func; };
+    button.classList.add('btn');
+    button.classList.add('input_btn');
+    context.appendChild(button);
+}
+
+function createRemoveButton(context, func, value) {
+    var button = document.createElement("input");
+    button.type = "button";
+    button.value = value;
+    button.onclick = function() { remove(func); };
+    button.classList.add('btn');
+    button.classList.add('input_btn');
+    button.classList.add('right');
+    context.appendChild(button);
+}
+
+
+function edit(partyId){
+  alert("Edit the party: " + partyId);
+}
+
+
+ 
+function getParties(){
+  var xhttp;
+  xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      updatePartyList2(JSON.parse(this.responseText));
+    }
+  };
+  xhttp.open("POST", "partyList", true);
+  xhttp.send();
+}
+
+
+function remove(partyId){
+  var r = confirm("Are you sure to remove Party n°"+ partyId + " ?");
+  if(!r){
+    return
+  }
+  var xhttp;
+  xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      getParties();
+    }
+  };
+  xhttp.open("POST", "removeParty", true);
+  xhttp.send(partyId);
+}
+
+</script>
+
+</body>
+</html>
+

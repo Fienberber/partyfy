@@ -1,11 +1,45 @@
 from flask import request, render_template
 from app import app
 from app.user import User
+from app.party import Party
+from flask import jsonify
 
 
 @app.route('/', methods=['GET'])
 def index():
-    return "PARTY TIME BOYZZZZ"
+    if request.method == "GET":
+        return render_template('homePage.html')
+
+    elif request.method == "POST":
+        return "ok"
+
+
+@app.route('/createInput', methods=['GET'])
+def createInput():
+    par1 = Party(1,1,"Great Party")
+    par1.save()
+    par2 = Party(2,1,"Nice Party")
+    par2.save()
+    par3 = Party(3,1,"New year")
+    par3.save()
+    par4 = Party(4,1,"John birthday")
+    par4.save()
+    return "Done"
+
+@app.route('/partyList', methods=['POST'])
+def partyList():
+    parties = Party.query.filter_by(creator_id=1).all()
+    print(parties)
+    return jsonify(json_list=[i.serialize for i in parties])
+
+
+@app.route('/removeParty', methods=['POST'])
+def removeParty():
+    data = int(request.data.decode("utf-8"))
+    d = Party.query.filter_by(id=data).first()
+    d.delete()
+    return "ok"
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -26,4 +60,5 @@ def login():
 @app.route('/setup', methods=['GET'])
 def setup():
     User.dbSetup()
+    Party.dbSetup()
     return "Setup complete"
