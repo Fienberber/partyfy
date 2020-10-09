@@ -37,8 +37,11 @@ def partyList():
 def removeParty():
     data = int(request.data.decode("utf-8"))
     d = Party.query.filter_by(id=data).first()
-    d.delete()
-    return "ok"
+    if session.get("user_id") == d.creator_id:
+        d.delete()
+        return "ok"
+    else:
+        return "ko"
 
 
 @app.route('/login', methods=['GET', 'POST'])
