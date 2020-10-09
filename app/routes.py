@@ -1,4 +1,4 @@
-from flask import request, render_template, jsonify
+from flask import request, render_template, jsonify, session, redirect
 from app import app
 from app.user import User
 from app.party import Party
@@ -29,8 +29,7 @@ def createInput():
 
 @app.route('/partyList', methods=['POST'])
 def partyList():
-    parties = Party.query.filter_by(creator_id=1).all()
-    print(parties)
+    parties = Party.query.filter_by(creator_id=session.get("user_id")).all()
     return jsonify(json_list=[i.serialize for i in parties])
 
 
@@ -38,12 +37,17 @@ def partyList():
 def removeParty():
     data = int(request.data.decode("utf-8"))
     d = Party.query.filter_by(id=data).first()
-    d.delete()
-    return "ok"
-
+    if session.get("user_id") == d.creator_id:
+        d.delete()
+        return "ok"
+    else:
+        return "ko"
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if session.get('user_id'):
+        return redirect('/', 302)
+
     if request.method == "GET":
         return render_template('login.jinja2')
 
@@ -53,22 +57,27 @@ def login():
 
         if user is not None:
             if user.verifyPassword(data['password']):
-                return "Logged in"
+                session['user_id'] = user.id
+                return jsonify(success=True,
+                               msg=f"Bienvenue {user.username}!")
 
-        return "Invalid email/password"
+        return jsonify(success=False,
+                       msg="Email ou mot de passe invalide.")
 
 
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.form.to_dict()
     if User.query.filter_by(email=data["email"]).first() is not None:
-        return "User already exists"
+        return jsonify(success=False,
+                       msg="Cet email est déjà enregistré!")
 
     user = User(username=data["username"],
                 email=data["email"],
                 password=data["password"])
     user.saveUser()
-    return "User created"
+    return jsonify(success=True,
+                   msg="Compte créé! Plus qu'à se connecter 🥳")
 
 
 @app.route('/setup', methods=['GET'])
