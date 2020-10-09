@@ -16,9 +16,8 @@ class Party(db.Model):
 
 
     def __init__(self, _creator_id, _title):
+        super(Party, self).__init__(**kwargs)
         self.token = secrets.token_urlsafe(16)
-        self.creator_id = _creator_id
-        self.title = _title
 
 
     @staticmethod
