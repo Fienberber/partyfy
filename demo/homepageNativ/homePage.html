@@ -3,7 +3,7 @@
 <head>
   <title>Partyfy home page</title>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="home.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 </head>
@@ -11,6 +11,8 @@
 
 
 <button class="btn right" onclick="window.location.href='logout';" type="button">logout</button>
+
+<button class="btn right" onclick="getParties()" type="button">updateInputs</button>
 <br>
 <div class="col-12">
 
@@ -53,24 +55,36 @@ var parties = ["New Year","Birthday","Esaip","Casual"]
 var partiesId = [1,2,3,4]
 var partiesInputCount = [80, 50, 120, 123];
 
+
 function loadUpdate(){
-	updatePartyList();
+	getParties();
 }
 
-function updatePartyList(){
-  var div = document.getElementById("partyList");
-  for (i = 0; i < parties.length; i++) { 
-    var p = document.createElement("dt"); 
-    p.classList.add('party');
-    p.innerHTML = parties[i] + ": " + partiesInputCount[i] ;
+function updatePartyList2(data){
+  var dl = document.getElementById("partyList");
+  while (dl.firstChild) {
+    dl.removeChild(dl.firstChild);
+  }
+  for (i = 0; i < data["json_list"].length; i++) { 
+    var dt = document.createElement("dt"); 
+    dt.classList.add('party');
+    //dt.innerHTML = data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
+    text =  data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
+    createSpan(dt,text)
+    createEditButton(dt,data["json_list"][i]["id"], "edit")
+    createRemoveButton(dt,data["json_list"][i]["id"], "remove")
 
-    createEditButton(p,partiesId[i], "edit")
-    createRemoveButton(p,partiesId[i], "remove")
-
-    div.appendChild(p);
+    dl.appendChild(dt);
   } 
 }
 
+function createSpan(context, value) {
+    var button = document.createElement("span");
+    button.innerHTML = value;
+    button.classList.add('input');
+    button.classList.add('left');
+    context.appendChild(button);
+}
 
 function createEditButton(context, func, value) {
     var button = document.createElement("input");
@@ -78,6 +92,7 @@ function createEditButton(context, func, value) {
     button.value = value;
     button.onclick = function() { window.location.href = 'edit#' + func; };
     button.classList.add('btn');
+    button.classList.add('input_btn');
     context.appendChild(button);
 }
 
@@ -85,24 +100,50 @@ function createRemoveButton(context, func, value) {
     var button = document.createElement("input");
     button.type = "button";
     button.value = value;
-    button.onclick = function() { delet(func); };
+    button.onclick = function() { remove(func); };
     button.classList.add('btn');
+    button.classList.add('input_btn');
+    button.classList.add('right');
     context.appendChild(button);
 }
 
-
-function delet(partyId){
-  var r = confirm("Are you sure ?");
-  if(r){
-    alert("removed: " + partyId)
-  }
-  //canceled
-}
 
 function edit(partyId){
   alert("Edit the party: " + partyId);
 }
 
+
+ 
+function getParties(){
+  var xhttp;
+  xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      updatePartyList2(JSON.parse(this.responseText));
+    }
+  };
+  xhttp.open("POST", "partyList", true);
+  xhttp.send();
+}
+
+
+function remove(partyId){
+  var r = confirm("Are you sure to remove Party n°"+ partyId + " ?");
+  if(!r){
+    return
+  }
+  var xhttp;
+  xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      getParties();
+    }
+  };
+  xhttp.open("POST", "removeParty", true);
+  xhttp.send(partyId);
+}
 
 </script>
 

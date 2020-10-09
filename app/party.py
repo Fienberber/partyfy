@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import app
 from app.user import User
+import secrets
+
 
 db = SQLAlchemy(app)
 
@@ -8,12 +10,13 @@ db = SQLAlchemy(app)
 class Party(db.Model):
     __tablename__ = 'party'
     id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(16), unique=True, nullable=False)
     creator_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
     title = db.Column(db.String(80), unique=False, nullable=False)
 
 
-    def __init__(self, _id, _creator_id, _title):
-        self.id = _id
+    def __init__(self, _creator_id, _title):
+        self.token = secrets.token_urlsafe(16)
         self.creator_id = _creator_id
         self.title = _title
 
@@ -26,10 +29,23 @@ class Party(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def deleteInputTypes(self):
+        from app.inputType import InputType
+        inputTypes = InputType.query.filter_by(party_id=self.id).all()
+        for i in inputTypes:
+            i.delete()
+
     def delete(self):
+        self.deleteInputTypes()
         db.session.delete(self)
         db.session.commit()
 
+    def getId(self):
+        return self.id
+
+    def setTitle(self, _title):
+        self.title = _title
+        db.session.commit()
 
     @property
     def serialize(self):
@@ -37,6 +53,5 @@ class Party(db.Model):
        return {
            'id'         : self.id,
            'creator_id': self.creator_id,
-           # This is an example how to deal with Many2Many relations
            'title'  : self.title
        }

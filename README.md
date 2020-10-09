@@ -121,9 +121,13 @@ The inputs will change automatically depending on the number of inputs.
 | Name  |  Type | Ex  |
 |---|---|---|
 | type_id  | number [unique]  |   |
-| input_id  | number  |   |
 | type_name  | string  |   |
 | light_server_ip  | string [optional] |   |
 | post_request  | string [optional] |   |
 
 
+## InputType-Input
+| Name  |  Type | Ex  |
+|---|---|---|
+| type_id  | number  |   |
+| input_id  | number  |   |

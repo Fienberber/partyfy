@@ -2,7 +2,10 @@ from flask import request, render_template, jsonify
 from app import app
 from app.user import User
 from app.party import Party
+from app.inputType import InputType
 from os import mkdir
+import json
+
 
 
 @app.route('/', methods=['GET'])
@@ -16,13 +19,13 @@ def index():
 
 @app.route('/createInput', methods=['GET'])
 def createInput():
-    par1 = Party(1,1,"Great Party")
+    par1 = Party(1,"Great Party")
     par1.save()
-    par2 = Party(2,1,"Nice Party")
+    par2 = Party(1,"Nice Party")
     par2.save()
-    par3 = Party(3,1,"New year")
+    par3 = Party(1,"New year")
     par3.save()
-    par4 = Party(4,1,"John birthday")
+    par4 = Party(1,"John birthday")
     par4.save()
     return "Done"
 
@@ -40,6 +43,48 @@ def removeParty():
     d.delete()
     return "ok"
 
+
+
+@app.route('/partyCreator', methods=['GET', 'POST'])
+def partyCreator():
+    if request.method == "GET":
+        return render_template('partyCreator.html')
+
+    elif request.method == "POST":
+        content = request.data.decode("utf-8")
+        print(content)
+        dict_cntnt = json.loads(content)
+
+        if(dict_cntnt["isUpdate"]=="True"):
+            _id = dict_cntnt["id"]
+            partie = Party.query.filter_by(creator_id=1,id=_id).first()
+            partie.setTitle(dict_cntnt["partyTitle"])
+            partie.deleteInputTypes()
+            partyID = _id
+
+        else:
+            title = dict_cntnt["partyTitle"]
+            newParty = Party(1, title)
+            newParty.save()
+            partyID = newParty.getId()
+
+        inputTypes = dict_cntnt["inputTypes"]
+        for inputType in inputTypes:
+            
+            name = inputType["typeName"]
+            url = inputType["url"]
+            InputType(partyID, name, url).save()
+        return "/"
+
+
+@app.route('/partyInfo', methods=['POST'])
+def partyInfo():
+    _id = int(request.data.decode("utf-8"))
+    partie = Party.query.filter_by(creator_id=1,id=_id).first()
+    inputTypes = InputType.query.filter_by(party_id=_id).all()
+
+    returnJson = jsonify(party=[partie.serialize], inputTypes=[i.serialize for i in inputTypes])
+    return returnJson
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -73,7 +118,8 @@ def signup():
 
 @app.route('/setup', methods=['GET'])
 def setup():
-    mkdir('db')
+    mkdir('app/db')
     User.dbSetup()
     Party.dbSetup()
+    InputType.dbSetup()
     return "Setup complete"
