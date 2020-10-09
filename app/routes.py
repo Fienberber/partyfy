@@ -1,4 +1,4 @@
-from flask import request, render_template, jsonify
+from flask import request, render_template, jsonify, session, redirect
 from app import app
 from app.user import User
 from app.party import Party
@@ -16,15 +16,16 @@ def index():
 
 @app.route('/createInput', methods=['GET'])
 def createInput():
-    par1 = Party(1,1,"Great Party")
+    par1 = Party(1, 1, "Great Party")
     par1.save()
-    par2 = Party(2,1,"Nice Party")
+    par2 = Party(2, 1, "Nice Party")
     par2.save()
-    par3 = Party(3,1,"New year")
+    par3 = Party(3, 1, "New year")
     par3.save()
-    par4 = Party(4,1,"John birthday")
+    par4 = Party(4, 1, "John birthday")
     par4.save()
     return "Done"
+
 
 @app.route('/partyList', methods=['POST'])
 def partyList():
@@ -41,9 +42,11 @@ def removeParty():
     return "ok"
 
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if session.get('user_id'):
+        return redirect('/', 302)
+
     if request.method == "GET":
         return render_template('login.jinja2')
 
@@ -53,6 +56,7 @@ def login():
 
         if user is not None:
             if user.verifyPassword(data['password']):
+                session['user_id'] = user.id
                 return "Logged in"
 
         return "Invalid email/password"
