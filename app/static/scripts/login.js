@@ -48,7 +48,7 @@ $("#signup-form").on('submit', function(e) {
 		title = $("#signup > h1");
 		title.text(data.msg);
 		if (data.success) {
-			title.css('color', '#179b77');
+			title.css('color', '#EE4266');
 		} else {
 			title.css('color', 'red');
 		}
@@ -61,7 +61,7 @@ $("#login-form").on('submit', function(e) {
 		title = $("#login > h1");
 		title.text(data.msg);
 		if (data.success) {
-			title.css('color', '#179b77');
+			title.css('color', '#EE4266');
 			const token = $.urlParam('token');
 			if(token){
 				$.post('/joinParty', {"token": token} ).done(alert("Joined the party !"))
