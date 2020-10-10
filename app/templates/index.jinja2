@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Partyfy - The UBER of collaborative party games</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Varela+Round'>
+<link rel="stylesheet" href="{{ url_for('static',filename='styles/index.css') }}">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<canvas height='1' id='confetti' width='1'></canvas>
+<div class="intro" id="intro">
+	<h1>Partyfy</h1>
+	Prêt à lancer la soirée?
+</div>
+<div class="intro bye" id="pres">
+	Partyfy est un jeu collaboratif pour animer vos soirées.<br>
+	<br>
+	Pour faire simple c'est un Picolo personnalisé, automatique et qui peut être intégré dans un système domotique.<br>
+	Ça à l'air cool hein?<br>
+	<br>
+	<a href="/login">Alors t'attends quoi? C'est par ici pour la soirée 🎉!</a>
+<!-- partial -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script  src="{{ url_for('static',filename='scripts/index.js') }}"></script>
+
+</body>
+</html>

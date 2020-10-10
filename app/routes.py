@@ -16,19 +16,16 @@ def addUserToTokenParty(_user_id, _token):
     else: 
         print("saved double entry")
 
-
 @app.route('/', methods=['GET'])
 def index():
-    if not session.get('user_id'): return redirect('/login', 302)#redirect if not logged in
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    else:
+        joinToken = request.args.get('token')#check if user want to join a party
+        if(joinToken):
+            addUserToTokenParty(session.get('user_id'), joinToken)
+        return render_template('homePage.html') 
     
-    joinToken = request.args.get('token')#check if user want to join a party
-    if(joinToken):
-        addUserToTokenParty(session.get('user_id'), joinToken)
-
-    if request.method == "GET":
-        return render_template('homePage.html')
-
-
 
 @app.route('/partyList', methods=['POST'])
 def partyList():
@@ -108,7 +105,7 @@ def partyCreator():
 
         inputTypes = dict_cntnt["inputTypes"]
         for inputType in inputTypes:
-            
+
             name = inputType["typeName"]
             url = inputType["url"]
             InputType(partyID, name, url).save()
@@ -146,7 +143,7 @@ def login():
             if user.verifyPassword(data['password']):
                 session['user_id'] = user.id
                 return jsonify(success=True,
-                               msg=f"Bienvenue {user.username}!")
+                               msg=f"Heureux de te revoir {user.username}!")
 
         return jsonify(success=False,
                        msg="Email ou mot de passe invalide.")
@@ -169,9 +166,9 @@ def signup():
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    if session.get('user_id'):
-        session.pop('user_id',None)  
-        return redirect('/login', 302)
+    session.clear()
+    return redirect("/", 302)
+
 
 
 @app.route('/setup', methods=['GET'])
