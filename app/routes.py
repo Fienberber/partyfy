@@ -152,6 +152,7 @@ def partyInfo():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Handle user login"""
     if session.get('user_id'):
         joinToken = request.args.get('token')
         if(len(joinToken) >= 10):
@@ -178,6 +179,7 @@ def login():
 
 @app.route('/signup', methods=['POST'])
 def signup():
+    """Handle user account creation"""
     data = request.form.to_dict()
     if User.query.filter_by(email=data["email"]).first() is not None:
         return jsonify(success=False,
@@ -193,12 +195,14 @@ def signup():
 
 @app.route('/logout', methods=['GET'])
 def logout():
+    """Handle user logout"""
     session.clear()
     return redirect("/", 302)
 
 
 @app.route('/setup', methods=['GET'])
 def setup():
+    """Setup the server for the first use"""
     try:
         mkdir('app/db')
     except FileExistsError:
