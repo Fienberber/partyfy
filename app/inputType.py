@@ -12,7 +12,6 @@ class InputType(db.Model):
     name = db.Column(db.String(80), unique=False, nullable=False)
     url = db.Column(db.String(80), unique=False, nullable=True)
 
-
     @staticmethod
     def dbSetup():
         db.create_all()
@@ -25,13 +24,10 @@ class InputType(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-
     @property
     def serialize(self):
-       """Return object data in easily serializable format"""
-       return {
-           'id'         : self.id,
-           'party_id': self.party_id,
-           'name': self.name,
-           'url'  : self.url
-       }
+        """Return object data in easily serializable format"""
+        return {'id': self.id,
+                'party_id': self.party_id,
+                'name': self.name,
+                'url': self.url}

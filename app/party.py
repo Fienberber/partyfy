@@ -14,11 +14,9 @@ class Party(db.Model):
     creator_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
     title = db.Column(db.String(80), unique=False, nullable=False)
 
-
     def __init__(self, **kwargs):
         super(Party, self).__init__(**kwargs)
         self.token = secrets.token_urlsafe(16)
-
 
     @staticmethod
     def dbSetup():
@@ -44,16 +42,13 @@ class Party(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-
     def setTitle(self, _title):
         self.title = _title
         db.session.commit()
 
     @property
     def serialize(self):
-       """Return object data in easily serializable format"""
-       return {
-           'id'         : self.id,
-           'creator_id': self.creator_id,
-           'title'  : self.title
-       }
+        """Return object data in easily serializable format"""
+        return {'id': self.id,
+                'creator_id': self.creator_id,
+                'title': self.title}
