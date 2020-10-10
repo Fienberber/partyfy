@@ -69,23 +69,21 @@ input.player_email {
   text-decoration: none;
 }
 
-
 .input_btn{
   text-align: right;
   margin: 20px 20px 20px 0px;
 }
 
 
+.delete_btn {
+  background-color: red;
+  visibility:hidden;
+}
 
-
-
-
-
-
-
-
-
-
+.delete_btn:hover {
+  background-color: black;
+  color :white;
+}
 
 
 dt{
