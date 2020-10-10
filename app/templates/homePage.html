@@ -3,6 +3,7 @@
 <head>
   <title>Partyfy home page</title>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="../static/styles/home.css">
   <link rel="stylesheet" href="{{ url_for('static',filename='styles/home.css') }}">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -28,11 +29,11 @@
   </div>
 
   <div class="col-6 center">
-    <button class="btn center" type="button" onclick="window.location.href='partyCreator';">Create a new Party</button>
+    
     <br>
     <br>
 		<h2 class="render" id="render_text">Manage your parties:</h2>
-
+    <button style="visibility:hidden;">This is cheating but tell no one please</button><button class="btn newParty_btn center" type="button" onclick="window.location.href='partyCreator';">Create a new Party</button>
     <div class="aside center">
       <nav>
      <dl class="partyList" id="partyList">

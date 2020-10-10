@@ -98,7 +98,7 @@ def partyCreator():
 
         else:#create a new party
             title = dict_cntnt["partyTitle"]
-            newParty = Party(1, title)
+            newParty = Party(creator_id=session.get("user_id"),title= title)
             newParty.save()
             partyID = newParty.id
             UserParty(user_id = session.get('user_id'), party_id = partyID).save()
@@ -106,9 +106,9 @@ def partyCreator():
         inputTypes = dict_cntnt["inputTypes"]
         for inputType in inputTypes:
 
-            name = inputType["typeName"]
-            url = inputType["url"]
-            InputType(partyID, name, url).save()
+            _name = inputType["typeName"]
+            _url = inputType["url"]
+            InputType(party_id= partyID, name= _name, url= _url).save()
         return "/"
 
 
@@ -127,7 +127,7 @@ def partyInfo():
 def login():
     if session.get('user_id'):
         joinToken = request.args.get('token')
-        if(len(joinToken) >= 10):
+        if(joinToken):
             return redirect('/?token='+joinToken, 302)
         else : 
             return redirect('/', 302)
