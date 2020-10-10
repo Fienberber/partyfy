@@ -7,14 +7,12 @@ from os import mkdir
 import json
 
 
-
 @app.route('/', methods=['GET'])
 def index():
-    if request.method == "GET":
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    elif request.method == "GET":
         return render_template('homePage.html')
-
-    elif request.method == "POST":
-        return "ok"
 
 
 @app.route('/createInput', methods=['GET'])
@@ -71,7 +69,7 @@ def partyCreator():
 
         inputTypes = dict_cntnt["inputTypes"]
         for inputType in inputTypes:
-            
+
             name = inputType["typeName"]
             url = inputType["url"]
             InputType(partyID, name, url).save()
@@ -104,7 +102,7 @@ def login():
             if user.verifyPassword(data['password']):
                 session['user_id'] = user.id
                 return jsonify(success=True,
-                               msg=f"Bienvenue {user.username}!")
+                               msg=f"Heureux de te revoir {user.username}!")
 
         return jsonify(success=False,
                        msg="Email ou mot de passe invalide.")
