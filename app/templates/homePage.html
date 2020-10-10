@@ -31,14 +31,26 @@
     <button class="btn center" type="button" onclick="window.location.href='partyCreator';">Create a new Party</button>
     <br>
     <br>
-		<h2 class="render" id="render_text">Your parties:</h2>
+		<h2 class="render" id="render_text">Manage your parties:</h2>
 
     <div class="aside center">
+      <nav>
      <dl class="partyList" id="partyList">
      </dl>
+     </nav>
     </div>
 
-		
+		<br>
+    <br>
+		<h2 class="render" id="render_text">Create inputs !</h2>
+
+    <div class="aside center">
+      <nav>
+     <dl class="invPartyList" id="invPartyList">
+     </dl>
+    </nav>
+    </div>
+
   </div>
 
   <div class="col-3 right">
@@ -56,10 +68,11 @@ var partiesInputCount = [80, 50, 120, 123];
 
 
 function loadUpdate(){
-	getParties();
+  getParties();
+  getInvitedParties();
 }
 
-function updatePartyList2(data){
+function updatePartyList(data){
   var dl = document.getElementById("partyList");
   while (dl.firstChild) {
     dl.removeChild(dl.firstChild);
@@ -77,11 +90,37 @@ function updatePartyList2(data){
   } 
 }
 
+function updateInvPartyList(data){
+  var dl = document.getElementById("invPartyList");
+  while (dl.firstChild) {
+    dl.removeChild(dl.firstChild);
+  }
+  for (i = 0; i < data["json_list"].length; i++) { 
+    var dt = document.createElement("dt"); 
+    dt.classList.add('party');
+    //dt.innerHTML = data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
+    text =  data["json_list"][i]["title"] ;//+ ": " + data["json_list"][i]["id"] ;
+    createSpan(dt,text)
+    createAddInputButton(dt,data["json_list"][i]["id"], "add input")
+    dl.appendChild(dt);
+  } 
+}
+
 function createSpan(context, value) {
     var button = document.createElement("span");
     button.innerHTML = value;
     button.classList.add('input');
     button.classList.add('left');
+    context.appendChild(button);
+}
+
+function createAddInputButton(context, func, value) {
+    var button = document.createElement("input");
+    button.type = "button";
+    button.value = value;
+    button.onclick = function() { window.location.href = 'addInput?partyTocken=' + func; };
+    button.classList.add('btn');
+    button.classList.add('input_btn');
     context.appendChild(button);
 }
 
@@ -119,13 +158,25 @@ function getParties(){
 
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      updatePartyList2(JSON.parse(this.responseText));
+      updatePartyList(JSON.parse(this.responseText));
     }
   };
   xhttp.open("POST", "partyList", true);
   xhttp.send();
 }
 
+function getInvitedParties(){
+  var xhttp;
+  xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      updateInvPartyList(JSON.parse(this.responseText));
+    }
+  };
+  xhttp.open("POST", "invPartyList", true);
+  xhttp.send();
+}
 
 function share(partyId){
   var xhttp;

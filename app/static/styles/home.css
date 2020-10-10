@@ -145,9 +145,17 @@ span.input {
 }
 
 
-
-
-
+nav dl{
+  border: solid ;
+  border-width: 10px ;
+  border-radius: 40px;
+  background-color: var(--main-ft-color);
+  height:400px;
+}
+nav dl{
+  overflow:hidden; 
+  overflow-y:scroll;
+}
 
 
 

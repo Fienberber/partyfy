@@ -38,6 +38,15 @@ def partyList():
     return jsonify(json_list=[i.serialize for i in parties])
 
 
+@app.route('/invPartyList', methods=['POST'])
+def invPartyList():
+    if not session.get('user_id'): return
+    parties = UserParty.query.filter_by(user_id=session.get("user_id")).all()
+
+    output = [ Party.query.filter_by(id=i.party_id).first() for i in parties ]
+    #parties = Party.query.filter_by(creator_id=session.get("user_id")).all()
+    return jsonify(json_list=[i.serialize for i in output])
+
 @app.route('/getShareLink', methods=['POST'])
 def getShareLink():
     if not session.get('user_id'): return
