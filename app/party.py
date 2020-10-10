@@ -15,7 +15,7 @@ class Party(db.Model):
     title = db.Column(db.String(80), unique=False, nullable=False)
 
 
-    def __init__(self, _creator_id, _title):
+    def __init__(self, **kwargs):
         super(Party, self).__init__(**kwargs)
         self.token = secrets.token_urlsafe(16)
 
