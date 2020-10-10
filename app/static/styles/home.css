@@ -140,12 +140,22 @@ span.input {
   margin: 28px 0px 28px 28px;
 }
 
+.shareLink{
+  visibility:hidden;
+}
 
 
-
-
-
-
+nav dl{
+  border: solid ;
+  border-width: 10px ;
+  border-radius: 40px;
+  background-color: var(--main-ft-color);
+  height:400px;
+}
+nav dl{
+  overflow:hidden; 
+  overflow-y:scroll;
+}
 
 
 
