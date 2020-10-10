@@ -5,31 +5,38 @@ from app.party import Party
 from app.userParty import UserParty
 from app.inputType import InputType
 from os import mkdir
-import json
+
 
 def addUserToTokenParty(_user_id, _token):
-    PartyToJoin = Party.query.filter_by(token=_token).first()
+    partyToJoin = Party.query.filter_by(token=_token).first()
 
-    entryTest = UserParty.query.filter_by(user_id=_user_id,party_id = PartyToJoin.id).first()
-    if(entryTest == None):
-        UserParty(user_id = _user_id, party_id = PartyToJoin.id).save()
-    else: 
-        print("saved double entry")
+    entryTest = UserParty.query.filter_by(user_id=_user_id,
+                                          party_id=partyToJoin.id).first()
+    if entryTest is None:
+        userParty = UserParty(user_id=_user_id,
+                              party_id=partyToJoin.id)
+        userParty.save()
+
 
 @app.route('/', methods=['GET'])
 def index():
+    """Homepage"""
     if not session.get('user_id'):
         return render_template('index.jinja2')
     else:
-        joinToken = request.args.get('token')#check if user want to join a party
+        # check if user want to join a party
+        joinToken = request.args.get('token')
         if(joinToken):
             addUserToTokenParty(session.get('user_id'), joinToken)
-        return render_template('homePage.html') 
-    
+
+        return render_template('homePage.html')
+
 
 @app.route('/partyList', methods=['POST'])
 def partyList():
-    if not session.get('user_id'): return
+    """Return all the parties the user created"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
 
     parties = Party.query.filter_by(creator_id=session.get("user_id")).all()
     return jsonify(json_list=[i.serialize for i in parties])
@@ -37,16 +44,20 @@ def partyList():
 
 @app.route('/invPartyList', methods=['POST'])
 def invPartyList():
-    if not session.get('user_id'): return
-    parties = UserParty.query.filter_by(user_id=session.get("user_id")).all()
+    """Return all the parties the user is invited to"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
 
-    output = [ Party.query.filter_by(id=i.party_id).first() for i in parties ]
-    #parties = Party.query.filter_by(creator_id=session.get("user_id")).all()
-    return jsonify(json_list=[i.serialize for i in output])
+    join = Party.query.join(UserParty)
+    parties = join.filter(UserParty.user_id == session.get("user_id")).all()
+    return jsonify(json_list=[i.serialize for i in parties])
+
 
 @app.route('/getShareLink', methods=['POST'])
 def getShareLink():
-    if not session.get('user_id'): return
+    """Return an invite link for the party. Send the party ID"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
 
     data = int(request.data.decode("utf-8"))
     d = Party.query.filter_by(id=data).first()
@@ -56,17 +67,23 @@ def getShareLink():
     else:
         return "ko"
 
+
 @app.route('/joinParty', methods=['POST'])
 def joinParty():
+    """Add the user to the party using its token"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
+
     data = request.form.to_dict()
-    print("token: " + data["token"])
     addUserToTokenParty(session.get('user_id'), data["token"])
     return "ok"
 
 
 @app.route('/removeParty', methods=['POST'])
 def removeParty():
-    if not session.get('user_id'): return
+    """Delete a party. Can only be done by the party's creator"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
 
     data = int(request.data.decode("utf-8"))
     d = Party.query.filter_by(id=data).first()
@@ -79,47 +96,57 @@ def removeParty():
 
 @app.route('/partyCreator', methods=['GET', 'POST'])
 def partyCreator():
-    if request.method == "GET":
-        if not session.get('user_id'): return redirect('/login', 302)#redirect if not logged in
+    if not session.get('user_id'):
+        return redirect('/login', 302)
+
+    elif request.method == "GET":
         return render_template('partyCreator.html')
 
     elif request.method == "POST":
-        if not session.get('user_id'): return
-        content = request.data.decode("utf-8")
-        print(content)
-        dict_cntnt = json.loads(content)
+        content = request.get_json(force=True)
 
-        if(dict_cntnt["isUpdate"]=="True"):#update values
-            _id = dict_cntnt["id"]
-            partie = Party.query.filter_by(creator_id=session.get("user_id"),id=_id).first()
-            partie.setTitle(dict_cntnt["partyTitle"])
+        if(content["isUpdate"] == "True"):  # update values
+            _id = content["id"]
+            partie = Party.query.filter_by(creator_id=session.get("user_id"),
+                                           id=_id).first()
+            partie.setTitle(content["partyTitle"])
             partie.deleteInputTypes()
             partyID = _id
 
-        else:#create a new party
-            title = dict_cntnt["partyTitle"]
-            newParty = Party(1, title)
+        else:  # create a new party
+            title = content["partyTitle"]
+            newParty = Party(creator_id=session.get-'user_id',
+                             title=title)
             newParty.save()
             partyID = newParty.id
-            UserParty(user_id = session.get('user_id'), party_id = partyID).save()
+            UserParty(user_id=session.get('user_id'),
+                      party_id=partyID).save()
 
-        inputTypes = dict_cntnt["inputTypes"]
-        for inputType in inputTypes:
+        inputTypes = content["inputTypes"]
+        for i in inputTypes:
+            name = i["typeName"]
+            url = i["url"]
+            inputType = InputType(party_id=partyID,
+                                  name=name,
+                                  url=url)
+            inputType.save()
 
-            name = inputType["typeName"]
-            url = inputType["url"]
-            InputType(partyID, name, url).save()
         return "/"
 
 
 @app.route('/partyInfo', methods=['POST'])
 def partyInfo():
-    if not session.get('user_id'): return
+    """Return infos on party"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
+
     _id = int(request.data.decode("utf-8"))
-    partie = Party.query.filter_by(creator_id=session.get("user_id"),id=_id).first()
+    partie = Party.query.filter_by(creator_id=session.get("user_id"),
+                                   id=_id).first()
     inputTypes = InputType.query.filter_by(party_id=_id).all()
 
-    returnJson = jsonify(party=[partie.serialize], inputTypes=[i.serialize for i in inputTypes])
+    returnJson = jsonify(party=[partie.serialize],
+                         inputTypes=[i.serialize for i in inputTypes])
     return returnJson
 
 
@@ -129,7 +156,7 @@ def login():
         joinToken = request.args.get('token')
         if(len(joinToken) >= 10):
             return redirect('/?token='+joinToken, 302)
-        else : 
+        else:
             return redirect('/', 302)
 
     if request.method == "GET":
@@ -168,7 +195,6 @@ def signup():
 def logout():
     session.clear()
     return redirect("/", 302)
-
 
 
 @app.route('/setup', methods=['GET'])
