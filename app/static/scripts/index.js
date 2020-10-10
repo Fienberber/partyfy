@@ -1,5 +1,5 @@
 // Canva click
-$("#confetti").click(function(e){
+$('body').click(function(e){
 	$("#intro").addClass('bye');
 	setTimeout(function() { 
 		$("#pres").removeClass('bye');
