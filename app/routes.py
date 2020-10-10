@@ -123,6 +123,12 @@ def signup():
                    msg="Compte créé! Plus qu'à se connecter 🥳")
 
 
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.clear()
+    return redirect("/")
+
+
 @app.route('/setup', methods=['GET'])
 def setup():
     try:
