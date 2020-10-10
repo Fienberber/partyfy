@@ -71,7 +71,7 @@ function updatePartyList2(data){
     text =  data["json_list"][i]["title"] ;//+ ": " + data["json_list"][i]["id"] ;
     createSpan(dt,text)
     createEditButton(dt,data["json_list"][i]["id"], "edit")
-    createRemoveButton(dt,data["json_list"][i]["id"], "remove")
+    createShareButton(dt,data["json_list"][i]["id"], "share")
 
     dl.appendChild(dt);
   } 
@@ -95,11 +95,11 @@ function createEditButton(context, func, value) {
     context.appendChild(button);
 }
 
-function createRemoveButton(context, func, value) {
+function createShareButton(context, func, value) {
     var button = document.createElement("input");
     button.type = "button";
     button.value = value;
-    button.onclick = function() { remove(func); };
+    button.onclick = function() { share(func); };
     button.classList.add('btn');
     button.classList.add('input_btn');
     button.classList.add('right');
@@ -127,20 +127,16 @@ function getParties(){
 }
 
 
-function remove(partyId){
-  var r = confirm("Are you sure to remove Party n°"+ partyId + " ?");
-  if(!r){
-    return
-  }
+function share(partyId){
   var xhttp;
   xhttp = new XMLHttpRequest();
 
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      getParties();
+      prompt('Press Ctrl + C, then Enter to copy to clipboard',this.responseText)
     }
   };
-  xhttp.open("POST", "removeParty", true);
+  xhttp.open("POST", "getShareLink", true);
   xhttp.send(partyId);
 }
 

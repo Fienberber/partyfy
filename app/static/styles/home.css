@@ -140,7 +140,9 @@ span.input {
   margin: 28px 0px 28px 28px;
 }
 
-
+.shareLink{
+  visibility:hidden;
+}
 
 
 
