@@ -16,6 +16,13 @@ body {
   background-size: cover;
 }
 
+h1 {
+  font-family: 'futura', 'helvetica', sans-serif;
+  color: white;
+  font-size: 4em;
+}
+
+
 input {
   display: inline-block;
   -webkit-box-sizing: content-box;

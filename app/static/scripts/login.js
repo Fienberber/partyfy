@@ -62,6 +62,7 @@ $("#login-form").on('submit', function(e) {
 		title.text(data.msg);
 		if (data.success) {
 			title.css('color', '#EE4266');
+			title.css('font-size', '2em');
 			const token = $.urlParam('token');
 			if(token){
 				$.post('/joinParty', {"token": token} ).done(alert("Joined the party !"))
