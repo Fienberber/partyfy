@@ -117,6 +117,7 @@ def partyCreator():
             title = content["partyTitle"]
             newParty = Party(creator_id=session.get-'user_id',
                              title=title)
+
             newParty.save()
             partyID = newParty.id
             UserParty(user_id=session.get('user_id'),
@@ -130,7 +131,6 @@ def partyCreator():
                                   name=name,
                                   url=url)
             inputType.save()
-
         return "/"
 
 
@@ -155,7 +155,7 @@ def login():
     """Handle user login"""
     if session.get('user_id'):
         joinToken = request.args.get('token')
-        if(len(joinToken) >= 10):
+        if(joinToken):
             return redirect('/?token='+joinToken, 302)
         else:
             return redirect('/', 302)

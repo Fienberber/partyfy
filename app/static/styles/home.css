@@ -1,15 +1,24 @@
 :root {
-  --main-bg-color: #F2D492;/* Background color */
+  --main-bg-color: linear-gradient(-225deg, #7DE2FC 0%, #B9B6E5 100%);/* Background color */
   --main-ft-color: #283845;/* Font color */
-  --main-bt-color: #F29559;/* Button color */
+  --main-bt-color: #EE4266;/* Button color */
 }
 
-
 body {
-  background-color: var(--main-bg-color);
   color : var(--main-ft-color);
   font-family: "Geneva", sans-serif;
   margin: 20px;
+
+  background-image: var(--main-bg-color);
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  background-size: cover;
+}
+
+h1 {
+  font-family: 'futura', 'helvetica', sans-serif;
+  color: white;
+  font-size: 4em;
 }
 
 input {
@@ -110,13 +119,14 @@ dt{
   -moz-border-radius: 40;
   border-radius: 40px;
   font-family: Arial;
-  color: white;
-  background: var(--main-bt-color);
   font-size: 20px;
   padding: 10px 20px 10px 20px;
   text-decoration: none;
   border: none;
   transition-duration: 0.5s;
+
+  color: white;
+  background: var(--main-bt-color);
 }
 
 .btn:hover {
@@ -150,6 +160,7 @@ nav dl{
   border-width: 10px ;
   border-radius: 40px;
   background-color: var(--main-ft-color);
+  box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
   height:400px;
 }
 nav dl{

@@ -3,6 +3,7 @@
 <head>
   <title>Partyfy home page</title>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="../static/styles/party.css">
   <link rel="stylesheet" href="{{ url_for('static',filename='styles/party.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -15,9 +16,7 @@
 <button class="btn right" onclick="window.location.href='logout';" type="button">logout</button>
 <button class="btn right" onclick="window.location.href='/';" type="button">home</button>
 
-<br>
 <div class="col-12">
-
 <h1 class="center" >Party creation:</h1>
 </div>
 <br>
@@ -32,14 +31,16 @@
 
   <div class="col-10 center">
     <input type="text" id="party_name" name="party_name" placeholder="Party name">
-    <p> Add Input types : </p>
+    <h2>Add Input types :</h2>
     <input type="text" id="input_name" class="input_name" name="input_name" placeholder="Name">
     <input type="text" id="input_url" class="input_url" name="input_url" placeholder="url (optional)">
     <a class="addButton" onclick="addType()"> + </a>
     <br>
     <div class="aside center">
+      <nav>
      <dl class="inputTypeList" id="inputTypeList">
      </dl>
+   </nav>
     </div>
     <br>
     <button class="btn center" type="button" onclick="saveParty()">save the Party</button>
