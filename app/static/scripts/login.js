@@ -62,9 +62,22 @@ $("#login-form").on('submit', function(e) {
 		title.text(data.msg);
 		if (data.success) {
 			title.css('color', '#179b77');
+			const token = $.urlParam('token');
+			if(token){
+				$.post('/joinParty', {"token": token} ).done(alert("Joined the party !"))
+			}
 			setTimeout(function() { window.location = '/'; }, 1000);
 		} else {
 			title.css('color', 'red');
 		}
 	}, dataType="json");
 });
+
+
+$.urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null) {
+       return null;
+    }
+    return decodeURI(results[1]) || 0;
+}

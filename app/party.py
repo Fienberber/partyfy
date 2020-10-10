@@ -30,8 +30,13 @@ class Party(db.Model):
 
     def deleteInputTypes(self):
         from app.inputType import InputType
+        from app.userParty import UserParty
         inputTypes = InputType.query.filter_by(party_id=self.id).all()
         for i in inputTypes:
+            i.delete()
+
+        usersInParty = UserParty.query.filter_by(party_id=self.id).all()
+        for i in usersInParty:
             i.delete()
 
     def delete(self):
@@ -39,8 +44,6 @@ class Party(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def getId(self):
-        return self.id
 
     def setTitle(self, _title):
         self.title = _title

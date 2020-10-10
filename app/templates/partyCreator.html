@@ -45,7 +45,7 @@
     <button class="btn center" type="button" onclick="saveParty()">save the Party</button>
     <br>
     <br>
-		
+    <button class="btn center delete_btn" id="delete_btn" type="button" onclick="deleteParty()">Delete</button>
   </div>
 
   <div class="col-1 right">
@@ -100,6 +100,27 @@ function saveParty(){
   xhttp.send(content);
 }
 
+function deleteParty(){
+  var r = confirm("Are you sure to remove Party n°"+ partyId + " ?");
+  if(!r){
+    return;
+  }
+  sendDeleteParty(partyId);
+}
+
+function sendDeleteParty(partyId){
+  var xhttp;
+  xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      window.location.href='/';
+    }
+  };
+  xhttp.open("POST", "removeParty", true);
+  xhttp.send(partyId);
+}
+
 function getTypes(){
   var output = '{"partyTitle":"';
   output += document.getElementById("party_name").value + '","inputTypes":[';
@@ -135,6 +156,8 @@ function editType(e){
 
 function loadUpdate(){
 	checkvars();
+  if(isUpdate) document.getElementById("delete_btn").style.visibility = "visible";
+  
 }
 
 function checkvars(){
