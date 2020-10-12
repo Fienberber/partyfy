@@ -43,7 +43,7 @@ def partyCreator():
 
         else:  # create a new party
             title = content["partyTitle"]
-            newParty = Party(creator_id=session.get-'user_id',
+            newParty = Party(creator_id=session.get('user_id'),
                              title=title)
 
             newParty.save()
