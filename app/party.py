@@ -28,10 +28,14 @@ class Party(db.Model):
 
     def deleteInputTypes(self):
         from app.inputType import InputType
-        from app.userParty import UserParty
+
         inputTypes = InputType.query.filter_by(party_id=self.id).all()
         for i in inputTypes:
             i.delete()
+
+
+    def deleteUsers(self):
+        from app.userParty import UserParty
 
         usersInParty = UserParty.query.filter_by(party_id=self.id).all()
         for i in usersInParty:
@@ -39,6 +43,7 @@ class Party(db.Model):
 
     def delete(self):
         self.deleteInputTypes()
+        self.deleteUsers()
         db.session.delete(self)
         db.session.commit()
 
@@ -50,5 +55,6 @@ class Party(db.Model):
     def serialize(self):
         """Return object data in easily serializable format"""
         return {'id': self.id,
+                'token': self.token,
                 'creator_id': self.creator_id,
                 'title': self.title}

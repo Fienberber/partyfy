@@ -97,7 +97,7 @@ function updateInvPartyList(data){
     //dt.innerHTML = data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
     text =  data["json_list"][i]["title"] ;//+ ": " + data["json_list"][i]["id"] ;
     createSpan(dt,text)
-    createAddInputButton(dt,data["json_list"][i]["id"], "add input")
+    createAddInputButton(dt,data["json_list"][i]["token"], "add input")
     dl.appendChild(dt);
   } 
 }
@@ -114,7 +114,7 @@ function createAddInputButton(context, func, value) {
     var button = document.createElement("input");
     button.type = "button";
     button.value = value;
-    button.onclick = function() { window.location.href = 'addInput?partyTocken=' + func; };
+    button.onclick = function() { window.location.href = 'inputEditor?partyToken=' + func; };
     button.classList.add('btn');
     button.classList.add('input_btn');
     context.appendChild(button);
@@ -124,7 +124,7 @@ function createEditButton(context, func, value) {
     var button = document.createElement("input");
     button.type = "button";
     button.value = value;
-    button.onclick = function() { window.location.href = 'partyCreator?partyTocken=' + func; };
+    button.onclick = function() { window.location.href = 'partyCreator?partyToken=' + func; };
     button.classList.add('btn');
     button.classList.add('input_btn');
     context.appendChild(button);

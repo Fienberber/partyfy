@@ -86,19 +86,19 @@ function saveParty(){
   if(document.getElementById("party_name").value.length>15){
     alert("The Party name has to be less than 15 character long.");
     return;
-  }
+  } 
   var content = getTypes();
 
-  var xhttp;
-  xhttp = new XMLHttpRequest();
-
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      window.location.href = this.responseText;
+  $.ajax({
+    data : JSON.stringify(content),
+    url: "/partyCreator",
+    contentType : 'application/json',
+    type : 'POST',
+    success: function(msg){
+        console.log(msg);
+        window.location.href = msg;
     }
-  };
-  xhttp.open("POST", "partyCreator", true);
-  xhttp.send(content);
+  });
 }
 
 function deleteParty(){
@@ -122,7 +122,7 @@ function sendDeleteParty(partyId){
   xhttp.send(partyId);
 }
 
-function getTypes(){
+function getTypes2(){
   var output = '{"partyTitle":"';
   output += document.getElementById("party_name").value + '","inputTypes":[';
   var names = document.getElementsByClassName("inputTypeName");
@@ -135,6 +135,21 @@ function getTypes(){
   if(isUpdate)output += 'True","id":';
   else output += 'False","id":';
   output += partyId + "}";
+  return output
+}
+
+function getTypes(){
+  var title = document.getElementById("party_name").value;
+  var names = document.getElementsByClassName("inputTypeName");
+  var urls = document.getElementsByClassName("inputTypeUrl");
+  var types = [];
+  for (var i = 0; i < names.length; i+=1) {
+    var type = {"typeName": names[i].innerHTML,"url": urls[i].innerHTML};
+    types.push(type);
+  }
+
+  var output = {"partyTitle":title ,"inputTypes":types,"isUpdate":isUpdate,"id":partyId }
+  console.log(output);
   return output
 }
 
@@ -162,11 +177,11 @@ function loadUpdate(){
 }
 
 function checkvars(){
-  var partyTocken = getUrlVars()["partyTocken"];
-  if(partyTocken){
+  var partyToken = getUrlVars()["partyToken"];
+  if(partyToken){
     isUpdate = true;
-    partyId = partyTocken;
-    getPartyInfo(partyTocken);
+    partyId = partyToken;
+    getPartyInfo(partyToken);
   }
 }
 

@@ -3,6 +3,7 @@ from app import app
 from app.user import User
 from app.party import Party
 from app.userParty import UserParty
+from app.input import Input
 from app.inputType import InputType
 from os import mkdir
 
@@ -103,9 +104,8 @@ def partyCreator():
         return render_template('partyCreator.html')
 
     elif request.method == "POST":
-        content = request.get_json(force=True)
-
-        if(content["isUpdate"] == "True"):  # update values
+        content = request.get_json()
+        if(content['isUpdate']):  # update values
             _id = content["id"]
             partie = Party.query.filter_by(creator_id=session.get("user_id"),
                                            id=_id).first()
@@ -115,7 +115,7 @@ def partyCreator():
 
         else:  # create a new party
             title = content["partyTitle"]
-            newParty = Party(creator_id=session.get-'user_id',
+            newParty = Party(creator_id=session.get('user_id'),
                              title=title)
 
             newParty.save()
@@ -148,6 +148,109 @@ def partyInfo():
     returnJson = jsonify(party=[partie.serialize],
                          inputTypes=[i.serialize for i in inputTypes])
     return returnJson
+
+
+
+@app.route('/inputEditor', methods=['GET'])
+def inputEditor():
+    """Input Editor"""
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    else:
+        return render_template('inputEditor.html')
+
+
+@app.route('/getTypes', methods=['POST'])
+def getTypes():
+    """Return the input types"""
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    else:
+        partyToken = request.form.to_dict()
+        partyToken = partyToken["partyToken"]
+        partyId = Party.query.filter_by(token=partyToken).first().id
+        types = InputType.query.filter_by(party_id=partyId).all()
+        return jsonify(json_list=[i.serialize for i in types])
+
+
+@app.route('/getInput', methods=['POST'])
+def getInput():
+    """Return the input"""
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    else:
+        _id = request.form.to_dict()["input_id"]
+        input = Input.query.filter_by(creator_id=session.get("user_id"),
+                                           id=_id).first()
+        return input.serialize
+
+@app.route('/getInputList', methods=['POST'])
+def getInputList():
+    """Return the input list"""
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    else:
+        _party_token = request.form.to_dict()["token"]
+        _party_id = Party.query.filter_by(token=_party_token).first().id
+        inputs = Input.query.filter_by(creator_id=session.get("user_id"),
+                                        party_id=_party_id).all()
+        return jsonify(input_list=[i.serialize for i in inputs])
+
+@app.route('/saveInput', methods=['POST'])
+def saveInput():
+    """Save the input"""
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    else:
+        content = request.form.to_dict()
+        
+        _title = content["title"]
+        _token = content["token"]
+        _type_id = content["type_id"]
+        _random_target = content["random_target"]
+        _content = content["content"]
+        _party_id = Party.query.filter_by(token=_token).first().id
+        print("type id: " + str(_type_id))
+
+        if(content["isUpdate"] == "True"):  # update values
+            print("is update !" + content["isUpdate"])
+            _input_id = content["inputId"]
+            input = Input.query.filter_by(creator_id=session.get("user_id"),
+                                           id=_input_id).first()
+            input.title = _title
+            input.type_id = _type_id
+            input.party_id = _party_id
+            input.content = _content
+            input.random_target = _random_target
+            input.save()
+            inputID = input
+
+        else:  # create a new Input
+            print("Create new"  + content["isUpdate"])
+            newInput = Input(creator_id=session.get('user_id'),
+                             title=_title,
+                             type_id = _type_id,
+                             party_id = _party_id,
+                             content = _content,
+                             random_target = _random_target,
+                             repeat = 0)
+
+            newInput.save()
+            inputID = newInput
+
+        return jsonify(inputID.serialize)
+
+@app.route('/removeInput', methods=['POST'])
+def removeInput():
+    """Delete the input types"""
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    else:
+        _input_id = request.form.to_dict()["input_id"]
+        Input.query.filter_by(creator_id=session.get("user_id"),
+                                        id=_input_id).first().delete()
+        
+        return "ok"
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -210,5 +313,6 @@ def setup():
     User.dbSetup()
     Party.dbSetup()
     UserParty.dbSetup()
+    Input.dbSetup()
     InputType.dbSetup()
     return "Setup complete"

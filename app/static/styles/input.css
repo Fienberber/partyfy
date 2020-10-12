@@ -1,0 +1,275 @@
+:root {
+  --main-bg-color: linear-gradient(-225deg, #7DE2FC 0%, #B9B6E5 100%);/* Background color */
+  --main-ft-color: #283845;/* Font color */
+  --main-bt-color: #EE4266;/* Button color */
+}
+
+
+body {
+  color : var(--main-ft-color);
+  font-family: "Geneva", sans-serif;
+  margin: 20px;
+
+  background-image: var(--main-bg-color);
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  background-size: cover;
+}
+
+h1 {
+  font-family: 'futura', 'helvetica', sans-serif;
+  color: white;
+  font-size: 3em;
+}
+
+
+input {
+  display: inline-block;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  padding: 10px 20px 10px 25px;
+  margin: 20px;
+  border: none;
+  -webkit-border-radius: 30px;
+  font-size: 20px;
+  border-radius: 30px;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+}
+
+
+
+
+.sidenav {
+  height: 100%;
+  width: 0%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: var(--main-ft-color);
+  overflow-x: hidden;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 12px;
+  text-decoration: none;
+  font-size: 15px;
+  color: white;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: var(--main-bt-color);
+}
+
+.sidenav h2 {
+  padding: 8px 8px 8px 12px;
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+  display: block;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.openbtn {
+  font-size:30px;
+  cursor:pointer;
+}
+
+.center {
+  text-align: center;
+  float: center;
+}
+
+.left {
+  text-align: left;
+  float: left;
+}
+
+.right {
+  text-align: right;
+  float: right;
+}
+
+/* For desktop: */
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [class*="col-"] {
+    width: 100%;
+  }
+}
+
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+}
+
+
+.row::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+
+
+.btn {
+  -webkit-border-radius: 40;
+  -moz-border-radius: 40;
+  border-radius: 40px;
+  font-family: Arial;
+  color: white;
+  background: var(--main-bt-color);
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  border: none;
+  transition-duration: 0.5s;
+}
+
+.btn:hover {
+  color: var(--main-ft-color);
+  background: var(--main-bt-color);
+  text-decoration: none;
+}
+
+.delete_btn {
+  background-color: red;
+  visibility:hidden;
+}
+.delete_btn:hover {
+  background-color: black;
+  color :white;
+}
+
+
+/* Reset Select */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  border: 0 !important;
+  background: white;
+  background-image: none;
+}
+
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+
+/* Custom Select */
+.select {
+  position: relative;
+  display: flex;
+  width: 19em;
+  line-height: 3;
+  background: white;
+  overflow: hidden;
+  border-radius: 30px;
+  padding-left: 15px;
+
+}
+
+.center_flex{
+  display: inline-block;
+}
+
+select {
+  flex: 1;
+  padding: 0 .5em;
+  color: var(--main-ft-color);
+  font-size: 16px;
+  cursor: pointer;
+}
+/* Arrow */
+.select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 1em;
+  background: white;
+  cursor: pointer;
+  pointer-events: none;
+  -webkit-transition: .25s all ease;
+  -o-transition: .25s all ease;
+  transition: .25s all ease;
+}
+/* Transition */
+.select:hover::after {
+  color: var(--main-bt-color);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
