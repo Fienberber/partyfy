@@ -157,7 +157,7 @@ function getParties(){
       updatePartyList(JSON.parse(this.responseText));
     }
   };
-  xhttp.open("POST", "partyList", true);
+  xhttp.open("POST", "/api/partyList", true);
   xhttp.send();
 }
 
@@ -170,7 +170,7 @@ function getInvitedParties(){
       updateInvPartyList(JSON.parse(this.responseText));
     }
   };
-  xhttp.open("POST", "invPartyList", true);
+  xhttp.open("POST", "/api/invPartyList", true);
   xhttp.send();
 }
 
@@ -183,7 +183,7 @@ function share(partyId){
       prompt('Press Ctrl + C, then Enter to copy to clipboard',this.responseText)
     }
   };
-  xhttp.open("POST", "getShareLink", true);
+  xhttp.open("POST", "/api/getShareLink", true);
   xhttp.send(partyId);
 }
 

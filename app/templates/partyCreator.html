@@ -118,7 +118,7 @@ function sendDeleteParty(partyId){
       window.location.href='/';
     }
   };
-  xhttp.open("POST", "removeParty", true);
+  xhttp.open("POST", "/api/removeParty", true);
   xhttp.send(partyId);
 }
 
@@ -179,7 +179,7 @@ function getPartyInfo(id){
       updatePartyInfo(JSON.parse(this.responseText));
     }
   };
-  xhttp.open("POST", "partyInfo", true);
+  xhttp.open("POST", "/api/partyInfo", true);
   xhttp.send(id);
 }
 
