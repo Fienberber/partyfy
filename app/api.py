@@ -1,8 +1,20 @@
-from flask import request, session, jsonify, redirect
+from flask import request, session, jsonify, redirect, abort
 from app import app
 from app.party import Party
 from app.userParty import UserParty
 from app.inputType import InputType
+
+
+# Decorator
+def protectedApi(f):
+    """This defines a decorator that can be used to limit api interaction to
+    logged in users"""
+    def _protectedApi(*args, **kwargs):
+        if not session.get('user_id'):  # Not logged in
+            abort(401)  # Unauthorized
+        else:
+            return f(*args, **kwargs)
+    return _protectedApi
 
 
 def addUserToTokenParty(_user_id, _token):
@@ -17,32 +29,26 @@ def addUserToTokenParty(_user_id, _token):
 
 
 @app.route('/api/partyList', methods=['POST'])
+@protectedApi
 def partyList():
     """Return all the parties the user created"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
     parties = Party.query.filter_by(creator_id=session.get("user_id")).all()
     return jsonify(json_list=[i.serialize for i in parties])
 
 
 @app.route('/api/invPartyList', methods=['POST'])
+@protectedApi
 def invPartyList():
     """Return all the parties the user is invited to"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
     join = Party.query.join(UserParty)
     parties = join.filter(UserParty.user_id == session.get("user_id")).all()
     return jsonify(json_list=[i.serialize for i in parties])
 
 
 @app.route('/api/getShareLink', methods=['POST'])
+@protectedApi
 def getShareLink():
     """Return an invite link for the party. Send the party ID"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
     data = int(request.data.decode("utf-8"))
     d = Party.query.filter_by(id=data).first()
     if session.get("user_id") == d.creator_id:
@@ -53,22 +59,18 @@ def getShareLink():
 
 
 @app.route('/api/joinParty', methods=['POST'])
+@protectedApi
 def joinParty():
     """Add the user to the party using its token"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
     data = request.form.to_dict()
     addUserToTokenParty(session.get('user_id'), data["token"])
     return "ok"
 
 
 @app.route('/api/removeParty', methods=['POST'])
+@protectedApi
 def removeParty():
     """Delete a party. Can only be done by the party's creator"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
     data = int(request.data.decode("utf-8"))
     d = Party.query.filter_by(id=data).first()
     if session.get("user_id") == d.creator_id:
@@ -79,11 +81,9 @@ def removeParty():
 
 
 @app.route('/api/partyInfo', methods=['POST'])
+@protectedApi
 def partyInfo():
     """Return infos on party"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
     _id = int(request.data.decode("utf-8"))
     partie = Party.query.filter_by(creator_id=session.get("user_id"),
                                    id=_id).first()
