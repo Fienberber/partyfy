@@ -54,21 +54,6 @@ def invPartyList():
     return jsonify(json_list=[i.serialize for i in parties])
 
 
-@app.route('/getShareLink', methods=['POST'])
-def getShareLink():
-    """Return an invite link for the party. Send the party ID"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
-    data = int(request.data.decode("utf-8"))
-    d = Party.query.filter_by(id=data).first()
-    if session.get("user_id") == d.creator_id:
-        url = "http://localhost:8000/login?token=" + d.token
-        return url
-    else:
-        return "ko"
-
-
 @app.route('/joinParty', methods=['POST'])
 def joinParty():
     """Add the user to the party using its token"""
@@ -154,50 +139,21 @@ def partyCreator():
     elif request.method == "GET":
         return render_template('partyCreator.html')
 
-    elif request.method == "POST":
-        content = request.get_json()
-        if(content['isUpdate']):  # update values
-            _id = content["id"]
-            partie = Party.query.filter_by(creator_id=session.get("user_id"),
-                                           id=_id).first()
-            partie.setTitle(content["partyTitle"])
-            partie.deleteInputTypes()
-            partyID = _id
-
-        else:  # create a new party
-            title = content["partyTitle"]
-            newParty = Party(creator_id=session.get('user_id'),
-                             title=title)
-
-            newParty.save()
-            partyID = newParty.id
-            UserParty(user_id=session.get('user_id'),
-                      party_id=partyID).save()
-
-        inputTypes = content["inputTypes"]
-        for i in inputTypes:
-            name = i["typeName"]
-            url = i["url"]
-            inputType = InputType(party_id=partyID,
-                                  name=name,
-                                  url=url)
-            inputType.save()
-        return "/"
-
 
 @app.route('/addInputType', methods=['POST'])
 def addInputType():
     content = request.form.to_dict()
     _name = content["name"]
     _url = content["url"]
-    _party_id = content["party_id"]
-
-    if(content["id"]== -1):#it's an input type update
-        inputType = InputType(name=_name, url=_url)
+    _party_id = int(content["party_id"])
+    _inputType_id = int(content["id"])
+    if(_inputType_id==-1):#it's an input type update
+        inputType = InputType(name=_name, 
+                                url=_url,
+                                party_id=_party_id)
         inputType.save()
 
     else:
-        _inputType_id = content["id"]
         inputType = InputType.query.filter_by(party_id=_party_id,
                                            id=_inputType_id).first()
         inputType.name = _name
@@ -218,23 +174,6 @@ def removeInputType():
 
     inputType.delete()
     return "ok"
-
-
-@app.route('/partyInfo', methods=['POST'])
-def partyInfo():
-    """Return infos on party"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
-    _id = int(request.data.decode("utf-8"))
-    partie = Party.query.filter_by(creator_id=session.get("user_id"),
-                                   id=_id).first()
-    inputTypes = InputType.query.filter_by(party_id=_id).all()
-
-    returnJson = jsonify(party=[partie.serialize],
-                         inputTypes=[i.serialize for i in inputTypes])
-    return returnJson
-
 
 
 @app.route('/inputEditor', methods=['GET'])
@@ -296,10 +235,8 @@ def saveInput():
         _random_target = content["random_target"]
         _content = content["content"]
         _party_id = Party.query.filter_by(token=_token).first().id
-        print("type id: " + str(_type_id))
 
         if(content["isUpdate"] == "True"):  # update values
-            print("is update !" + content["isUpdate"])
             _input_id = content["inputId"]
             input = Input.query.filter_by(creator_id=session.get("user_id"),
                                            id=_input_id).first()
@@ -312,7 +249,6 @@ def saveInput():
             inputID = input
 
         else:  # create a new Input
-            print("Create new"  + content["isUpdate"])
             newInput = Input(creator_id=session.get('user_id'),
                              title=_title,
                              type_id = _type_id,

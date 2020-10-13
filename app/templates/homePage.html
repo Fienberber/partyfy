@@ -174,17 +174,9 @@ function getInvitedParties(){
   xhttp.send();
 }
 
-function share(partyId){
-  var xhttp;
-  xhttp = new XMLHttpRequest();
-
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      prompt('Press Ctrl + C, then Enter to copy to clipboard',this.responseText)
-    }
-  };
-  xhttp.open("POST", "getShareLink", true);
-  xhttp.send(partyId);
+function share(token){
+  link = "http://localhost:8000/login?token=" + token;
+  prompt('Press Ctrl + C, then Enter to copy to clipboard',link);
 }
 
 </script>
