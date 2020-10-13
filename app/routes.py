@@ -94,14 +94,65 @@ def removeParty():
     else:
         return "ko"
 
+@app.route('/createParty', methods=['POST'])
+def createParty():
+    """Create a Party"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
 
-@app.route('/partyCreator', methods=['GET', 'POST'])
+    _title = request.form.to_dict()['title']
+
+    newParty = Party(creator_id=session.get('user_id'),
+                             title=_title)
+
+    newParty.save()
+    partyID = newParty.id
+    UserParty(user_id=session.get('user_id'),
+                party_id=partyID).save()
+
+    returnJson = jsonify(newParty.serialize,
+                         inputTypes=[])
+    return returnJson
+
+@app.route('/getPartyInfo', methods=['POST'])
+def getPartyInfo():
+    """Create a Party infos"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
+
+    _token = request.form.to_dict()['token']
+    
+    partie = Party.query.filter_by(creator_id=session.get("user_id"),
+                                   token=_token).first()
+    _id = partie.id
+    inputTypes = InputType.query.filter_by(party_id=_id).all()
+
+    returnJson = jsonify(party=[partie.serialize],
+                         inputTypes=[i.serialize for i in inputTypes])
+    return returnJson
+
+@app.route('/updateParty', methods=['POST'])
+def updateParty():
+    """Update a Party infos"""
+    if not session.get('user_id'):
+        return redirect('/', 302)
+
+    _id = request.form.to_dict()['id']
+    _title = request.form.to_dict()['title']
+
+    partie = Party.query.filter_by(creator_id=session.get("user_id"),
+                                   id=_id).first()
+    partie.title = _title
+    partie.save()
+    return "/"
+
+@app.route('/partyCreator', methods=['GET'])
 def partyCreator():
     if not session.get('user_id'):
         return redirect('/login', 302)
 
     elif request.method == "GET":
-        return render_template('partyCreator.html')
+        return render_template('partyCreator2.html')
 
     elif request.method == "POST":
         content = request.get_json()
@@ -132,6 +183,41 @@ def partyCreator():
                                   url=url)
             inputType.save()
         return "/"
+
+
+@app.route('/addInputType', methods=['POST'])
+def addInputType():
+    content = request.form.to_dict()
+    _name = content["name"]
+    _url = content["url"]
+    _party_id = content["party_id"]
+
+    if(content["id"]== -1):#it's an input type update
+        inputType = InputType(name=_name, url=_url)
+        inputType.save()
+
+    else:
+        _inputType_id = content["id"]
+        inputType = InputType.query.filter_by(party_id=_party_id,
+                                           id=_inputType_id).first()
+        inputType.name = _name
+        inputType.url = _url
+        inputType.save()
+
+
+    return jsonify(inputType.serialize)
+
+
+@app.route('/removeInputType', methods=['POST'])
+def removeInputType():
+    content = request.form.to_dict()
+    _inputType_id = content["id"]
+    _party_id = content["party_id"]
+    inputType = InputType.query.filter_by(party_id=_party_id,
+                                        id=_inputType_id).first()
+
+    inputType.delete()
+    return "ok"
 
 
 @app.route('/partyInfo', methods=['POST'])

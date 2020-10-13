@@ -79,8 +79,8 @@ function updatePartyList(data){
     //dt.innerHTML = data["json_list"][i]["title"] + ": " + data["json_list"][i]["id"] ;
     text =  data["json_list"][i]["title"] ;//+ ": " + data["json_list"][i]["id"] ;
     createSpan(dt,text)
-    createEditButton(dt,data["json_list"][i]["id"], "edit")
-    createShareButton(dt,data["json_list"][i]["id"], "share")
+    createEditButton(dt,data["json_list"][i]["token"], "edit")
+    createShareButton(dt,data["json_list"][i]["token"], "share")
 
     dl.appendChild(dt);
   } 
