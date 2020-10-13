@@ -152,7 +152,7 @@ def partyCreator():
         return redirect('/login', 302)
 
     elif request.method == "GET":
-        return render_template('partyCreator2.html')
+        return render_template('partyCreator.html')
 
     elif request.method == "POST":
         content = request.get_json()

@@ -39,6 +39,34 @@ input {
 }
 
 
+dt{
+  background-color: white;
+  border-radius: 50px;
+  border: solid;
+  border-color: var(--main-bt-color);
+  font-size: 20px;
+  margin:15px;
+}
+
+nav dl{
+  border: solid ;
+  border-width: 10px ;
+  border-radius: 40px;
+  background-color: var(--main-ft-color);
+  box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+  height:400px;
+}
+nav dl{
+  overflow:hidden; 
+  overflow-y:scroll;
+}
+
+.aside{
+  width : 400px;
+  display: inline-block;
+  float: center;
+}
+
 
 
 .sidenav {
@@ -161,6 +189,16 @@ input {
   border: none;
   transition-duration: 0.5s;
 }
+
+.btn_save {
+  background: #58BC82;
+}
+
+.btn_save:hover {
+  background: #58BC82;
+}
+
+
 
 .btn:hover {
   color: var(--main-ft-color);
