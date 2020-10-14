@@ -149,29 +149,17 @@ function edit(partyId){
 
  
 function getParties(){
-  var xhttp;
-  xhttp = new XMLHttpRequest();
-
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      updatePartyList(JSON.parse(this.responseText));
-    }
-  };
-  xhttp.open("POST", "/api/partyList", true);
-  xhttp.send();
+  $.post("/api/partyList",{},function(response){
+    updatePartyList(response);
+    console.log(response);
+  });
 }
 
 function getInvitedParties(){
-  var xhttp;
-  xhttp = new XMLHttpRequest();
-
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      updateInvPartyList(JSON.parse(this.responseText));
-    }
-  };
-  xhttp.open("POST", "/api/invPartyList", true);
-  xhttp.send();
+  $.post("/api/invPartyList",{},function(response){
+    updateInvPartyList(response);
+    console.log(response);
+  });
 }
 
 function share(token){

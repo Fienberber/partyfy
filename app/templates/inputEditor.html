@@ -71,7 +71,7 @@
       <h2>Example of nice Input</h2>
       <p>[players] do a great picture to save this moment.</p>
       <h2>An other none ?</h2>
-      <p>If you've already defrauded the metro, drink 2 sips</p>
+      <p>If you've already frauded the metro, drink 2 sips</p>
       <h2>Lastly</h2>
       <p>Don't forget to thanks your hosts and the dev of this game (it took a lot of effort).</p>
     </div>
@@ -107,7 +107,7 @@
  }
 
  function getInputList(){
-  $.post("/getInputList",{"token":partyToken},function(response){
+  $.post("/api/getInputList",{"token":partyToken},function(response){
     console.log(response);
     inputList = response["input_list"];
     updateNavBar();
@@ -124,7 +124,7 @@ function updatePlayerNumber(){
 }
 
 function getInputTypes(){
-  $.post("/getTypes",{ "partyToken": partyToken },function(response){
+  $.post("/api/getTypes",{ "partyToken": partyToken },function(response){
     console.log(response);
     updateTypesList(response["json_list"]);
   });
@@ -169,7 +169,7 @@ function saveInput(){
   isUpdate = isAnUpdate;
   input_id = currentInputID;
   data = {"title": title, "token":token, "type_id":type_id, "random_target":random_target, "content": content, "isUpdate" : isUpdate, "inputId" : input_id}
-  $.post("/saveInput",data,function(response){
+  $.post("/api/saveInput",data,function(response){
     console.log(response);
     updateInputList(response);
   });
@@ -249,7 +249,7 @@ function deleteInput(){
       inputList.splice(i, 1);
     }
   }
-  $.post("/removeInput",{"input_id":currentInputID},function(response){
+  $.post("/api/removeInput",{"input_id":currentInputID},function(response){
     console.log(response);
     getInput(-1);
   });

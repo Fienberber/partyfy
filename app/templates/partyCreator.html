@@ -80,16 +80,16 @@
   }
 
   function getPartyInfo(token){
-    $.post("/getPartyInfo",{ "token": token },function(response){
+    $.post("/api/getPartyInfo",{ "token": token },function(response){
       partyId = response["party"][0]["id"];
-       updatePartyInfo(response);
-      console.log(response["party"][0]["id"]);
+      updatePartyInfo(response);
+      console.log(response);
     });
   }
 
 
   function getNewPartyInfo(){
-    $.post("/createParty",{ "title": "" },function(response){
+    $.post("/api/createParty",{ "title": "" },function(response){
       partyId = response["party"][0]["id"];
       updatePartyInfo(response);
       console.log(response);
@@ -135,7 +135,7 @@
     }
     var title = document.getElementById("party_name").value;
 
-    $.post("/updateParty",{ "title": title, "id": partyId},function(response){
+    $.post("/api/updateParty",{ "title": title, "id": partyId},function(response){
       console.log(response);
       window.location.href = response
     });
@@ -148,7 +148,7 @@
         inputTypeList.splice(i, 1);
       }
     }
-    $.post("/removeInputType",{ "id": id, "party_id":partyId},function(response){
+    $.post("/api/removeInputType",{ "id": id, "party_id":partyId},function(response){
       console.log(response);
     });
     updateHTML();
@@ -170,7 +170,7 @@
     var name = document.getElementById("input_name").value;
     var id = Number(document.getElementById("input_name").name);
     var url = document.getElementById("input_url").value;
-    $.post("/addInputType",{ "name": name, "url":url, "id":id, "party_id":partyId },function(response){
+    $.post("/api/addInputType",{ "name": name, "url":url, "id":id, "party_id":partyId },function(response){
       console.log(response);
       addTypeToDB(response);
     });
@@ -205,6 +205,20 @@
     return vars;
   }
 
+function deleteParty(){
+  var r = confirm("Are you sure to remove Party n°"+ partyId + " ?");
+  if(!r){
+    return;
+  }
+  sendDeleteParty(partyId);
+}
+
+function sendDeleteParty(partyId){
+  $.post("/api/removeParty",{ "id": partyId, "token":partyToken},function(response){
+      console.log(response);
+      window.location.href='/';
+  });
+}
 
 </script>
 
