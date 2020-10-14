@@ -1,22 +1,12 @@
 from flask import request, render_template, jsonify, session, redirect
 from app import app
+from app import api
 from app.user import User
 from app.party import Party
 from app.userParty import UserParty
 from app.input import Input
 from app.inputType import InputType
 from os import mkdir
-
-
-def addUserToTokenParty(_user_id, _token):
-    partyToJoin = Party.query.filter_by(token=_token).first()
-
-    entryTest = UserParty.query.filter_by(user_id=_user_id,
-                                          party_id=partyToJoin.id).first()
-    if entryTest is None:
-        userParty = UserParty(user_id=_user_id,
-                              party_id=partyToJoin.id)
-        userParty.save()
 
 
 @app.route('/', methods=['GET'])
@@ -28,7 +18,7 @@ def index():
         # check if user want to join a party
         joinToken = request.args.get('token')
         if(joinToken):
-            addUserToTokenParty(session.get('user_id'), joinToken)
+            api.addUserToTokenParty(session.get('user_id'), joinToken)
 
         return render_template('homePage.html')
 
@@ -82,14 +72,16 @@ def removeParty():
 @app.route('/createParty', methods=['POST'])
 def createParty():
     """Create a Party"""
-    if not session.get('user_id'):
-        return redirect('/', 302)
-
-    _title = request.form.to_dict()['title']
-
-    newParty = Party(creator_id=session.get('user_id'),
-                             title=_title)
-
+    inputTypes = content["inputTypes"]
+    for i in inputTypes:
+        name = i["typeName"]
+        url = i["url"]
+        inputType = InputType(party_id=partyID,
+                              name=name,
+                              url=url)
+        inputType.save()
+    return "/"
+  
     newParty.save()
     partyID = newParty.id
     UserParty(user_id=session.get('user_id'),
@@ -98,6 +90,38 @@ def createParty():
     returnJson = jsonify(newParty.serialize,
                          inputTypes=[])
     return returnJson
+  
+  
+@app.route('/partyCreator', methods=['GET', 'POST'])
+def partyCreator():
+  
+
+    if not session.get('user_id'):
+        return redirect('/', 302)
+
+    _title = request.form.to_dict()['title']
+
+    newParty = Party(creator_id=session.get('user_id'),
+                             title=_title)
+    if(content["isUpdate"] == "True"):  # update values
+        _id = content["id"]
+        partie = Party.query.filter_by(creator_id=session.get("user_id"),
+                                       id=_id).first()
+        partie.setTitle(content["partyTitle"])
+        partie.deleteInputTypes()
+        partyID = _id
+
+    else:  # create a new party
+        title = content["partyTitle"]
+        newParty = Party(creator_id=session.get('user_id'),
+                         title=title)
+
+        newParty.save()
+        partyID = newParty.id
+        UserParty(user_id=session.get('user_id'),
+                  party_id=partyID).save()
+
+
 
 @app.route('/getPartyInfo', methods=['POST'])
 def getPartyInfo():
@@ -275,6 +299,7 @@ def removeInput():
         return "ok"
 
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Handle user login"""
@@ -324,7 +349,7 @@ def logout():
     session.clear()
     return redirect("/", 302)
 
-
+# Temporary
 @app.route('/setup', methods=['GET'])
 def setup():
     """Setup the server for the first use"""
