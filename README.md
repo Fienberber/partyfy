@@ -1,6 +1,9 @@
 # partyfy
 The UBER of collaborative party game
 
+# To do
+- List the players invited to the party (in the input creator).
+- Make the game engine (it's a big chunk).
 
 # Usage
 ```
