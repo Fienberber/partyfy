@@ -42,12 +42,10 @@ dt{
   border: solid;
   border-color: var(--main-bt-color);
   font-size: 20px;
-}
-
-.party{
   margin:30px;
-
 }
+
+
 .aside{
   width : 500px;
   display: inline-block;

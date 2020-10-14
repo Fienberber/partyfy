@@ -111,7 +111,8 @@ The inputs will change automatically depending on the number of inputs.
 |---|---|---|
 | input_id  | number [unique] |   |
 | title  | string  |   |
-| type  | type_id  |   |
+| type_id  | type_id  |   |
+| party_id  | party_id  |   |
 | repeat  | number [-1 infinity, n for n repetitions]  |   |
 | random_target  | number | (number of people targeted by the random selector)  |
 | input_content | string |   |
@@ -120,14 +121,9 @@ The inputs will change automatically depending on the number of inputs.
 ## InputType 
 | Name  |  Type | Ex  |
 |---|---|---|
-| type_id  | number [unique]  |   |
+| id  | number [unique]  |   |
 | type_name  | string  |   |
-| light_server_ip  | string [optional] |   |
-| post_request  | string [optional] |   |
+| party_id  | number |   |
+| url  | string [optional] |   |
 
 
-## InputType-Input
-| Name  |  Type | Ex  |
-|---|---|---|
-| type_id  | number  |   |
-| input_id  | number  |   |

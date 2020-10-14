@@ -13,192 +13,197 @@
 <body onload="loadUpdate()">
 
 
-<button class="btn right" onclick="window.location.href='logout';" type="button">logout</button>
-<button class="btn right" onclick="window.location.href='/';" type="button">home</button>
+  <button class="btn right" onclick="window.location.href='logout';" type="button">logout</button>
+  <button class="btn right" onclick="window.location.href='/';" type="button">home</button>
 
-<div class="col-12">
-<h1 class="center" >Party creation:</h1>
-</div>
-<br>
-<br>
-<br>
-
-
-<div class="row">
-  <div class="col-1">
-     
+  <div class="col-12">
+    <h1 class="center" >Party creation:</h1>
   </div>
+  <br>
+  <br>
+  <br>
 
-  <div class="col-10 center">
-    <input type="text" id="party_name" name="party_name" placeholder="Party name">
-    <h2>Add Input types :</h2>
-    <input type="text" id="input_name" class="input_name" name="input_name" placeholder="Name">
-    <input type="text" id="input_url" class="input_url" name="input_url" placeholder="url (optional)">
-    <a class="addButton" onclick="addType()"> + </a>
-    <br>
-    <div class="aside center">
-      <nav>
-     <dl class="inputTypeList" id="inputTypeList">
-     </dl>
-   </nav>
+
+  <div class="row">
+    <div class="col-1">
+
     </div>
-    <br>
-    <button class="btn center" type="button" onclick="saveParty()">save the Party</button>
-    <br>
-    <br>
-    <button class="btn center delete_btn" id="delete_btn" type="button" onclick="deleteParty()">Delete</button>
-  </div>
 
-  <div class="col-1 right">
-    
-  </div>
-</div>
+    <div class="col-10 center">
+      <input type="text" id="party_name" name="party_name" placeholder="Party name">
+      <h2>Add Input types :</h2>
+      <input type="text" id="input_name" class="input_name" name="-1" placeholder="Name">
+      <input type="text" id="input_url" class="input_url" name="" placeholder="url (optional)">
+      <a class="addButton" onclick="addType()"> + </a>
+      <br>
+      <div class="aside center">
+        <nav>
+         <dl class="inputTypeList" id="inputTypeList">
+         </dl>
+       </nav>
+     </div>
+     <br>
+     <button class="btn center" type="button" onclick="saveParty()">save the Party</button>
+     <br>
+     <br>
+     <button class="btn center delete_btn" id="delete_btn" type="button" onclick="deleteParty()">Delete</button>
+   </div>
+
+   <div class="col-1 right">
+
+   </div>
+ </div>
 
 
-<script>
-var isUpdate = false;
-var partyId = -1;
+ <script>
+  var partyId = -1;
+  var partyToken = -1;
 
-function addType(){
-  var name = document.getElementById("input_name").value;
-  var url = document.getElementById("input_url").value;
+  var Party;
+  var inputTypeList;
 
-  makeType(name, url);
+  function loadUpdate(){
+    checkvars();
 
-  document.getElementById("input_name").value = "";
-  document.getElementById("input_url").value = "";
-}
-
-function makeType(name, url){
-  var dl = document.getElementById("inputTypeList");
-  var dt = document.createElement("dt"); 
-  dt.classList.add('inputType');
-  dt.innerHTML = "<a class='inputTypeInfo inputTypeName' >" + name + "</a>" + " - " + "<a class='inputTypeInfo inputTypeUrl' >"+ url + "</a>";
-  dt.innerHTML += "<a class='removeInputType' onclick='removeInputType(this)'> &times; </a><i class='fa fa-edit editInputType' onclick='editType(this)'></i>";
-  dl.appendChild(dt);
-}
-
-function saveParty(){
-  if(!document.getElementById("party_name").value){
-    alert("Name your party !");
-    return;
   }
-  if(document.getElementById("party_name").value.length>15){
-    alert("The Party name has to be less than 15 character long.");
-    return;
-  }
-  var content = getTypes();
 
-  var xhttp;
-  xhttp = new XMLHttpRequest();
 
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      window.location.href = this.responseText;
+  function checkvars(){
+    partyToken = getUrlVars()["partyToken"];
+    if(partyToken){
+      getPartyInfo(partyToken);
+      document.getElementById("delete_btn").style.visibility = "visible";
     }
-  };
-  xhttp.open("POST", "partyCreator", true);
-  xhttp.send(content);
-}
-
-function deleteParty(){
-  var r = confirm("Are you sure to remove Party n°"+ partyId + " ?");
-  if(!r){
-    return;
-  }
-  sendDeleteParty(partyId);
-}
-
-function sendDeleteParty(partyId){
-  var xhttp;
-  xhttp = new XMLHttpRequest();
-
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      window.location.href='/';
+    else{
+      getNewPartyInfo();
     }
-  };
-  xhttp.open("POST", "/api/removeParty", true);
-  xhttp.send(partyId);
-}
-
-function getTypes(){
-  var output = '{"partyTitle":"';
-  output += document.getElementById("party_name").value + '","inputTypes":[';
-  var names = document.getElementsByClassName("inputTypeName");
-  var urls = document.getElementsByClassName("inputTypeUrl");
-  for (var i = 0; i < names.length; i+=1) {
-    output += '{"typeName":"' + names[i].innerHTML + '","url":"' + urls[i].innerHTML + '"}'
-    if(i+1 < names.length)output += ',';
   }
-  output += '],"isUpdate":"';
-  if(isUpdate)output += 'True","id":';
-  else output += 'False","id":';
-  output += partyId + "}";
-  return output
-}
 
-
-function removeInputType(e){
-  e.parentNode.remove();
-}
-
-function editType(e){
-  var dt = e.parentNode;
-  var child = dt.childNodes;
-  var name = child[0].innerHTML
-  var url = child[2].innerHTML
-  document.getElementById("input_name").value = name;
-  document.getElementById("input_url").value = url;
-
-  e.parentNode.remove();
-}
-
-
-function loadUpdate(){
-	checkvars();
-  if(isUpdate) document.getElementById("delete_btn").style.visibility = "visible";
-  
-}
-
-function checkvars(){
-  var partyTocken = getUrlVars()["partyTocken"];
-  if(partyTocken){
-    isUpdate = true;
-    partyId = partyTocken;
-    getPartyInfo(partyTocken);
+  function getPartyInfo(token){
+    $.post("/getPartyInfo",{ "token": token },function(response){
+      partyId = response["party"][0]["id"];
+       updatePartyInfo(response);
+      console.log(response["party"][0]["id"]);
+    });
   }
-}
 
-function getPartyInfo(id){
-  var xhttp;
-  xhttp = new XMLHttpRequest();
 
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      updatePartyInfo(JSON.parse(this.responseText));
+  function getNewPartyInfo(){
+    $.post("/createParty",{ "title": "" },function(response){
+      partyId = response["party"][0]["id"];
+      updatePartyInfo(response);
+      console.log(response);
+    });
+  }
+
+  function updatePartyInfo(response){
+    document.getElementById("party_name").value = response["party"][0]["title"];
+    inputTypeList = response["inputTypes"];
+    updateHTML();
+  }
+
+  function updateHTML(){
+    var htmlList = document.getElementById("inputTypeList");
+    while (htmlList.firstChild) {
+      htmlList.removeChild(htmlList.firstChild);
     }
-  };
-  xhttp.open("POST", "/api/partyInfo", true);
-  xhttp.send(id);
-}
-
-function updatePartyInfo(response){
-  document.getElementById("party_name").value = response["party"][0]["title"];
-  for(var i = 0; i < response["inputTypes"].length; i++){
-    name = response["inputTypes"][i]["name"];
-    url = response["inputTypes"][i]["url"];
-    makeType(name, url);
+    for(i = 0; i < inputTypeList.length; i++){
+      name = inputTypeList[i]["name"];
+      url = inputTypeList[i]["url"];
+      id = inputTypeList[i]["id"];
+      makeType(id, name, url);
+    }
   }
-}
 
-function getUrlVars() {
+  function makeType(id, name, url){
+    var dl = document.getElementById("inputTypeList");
+    var dt = document.createElement("dt"); 
+    dt.classList.add('inputType');
+    dt.innerHTML = "<a class='inputTypeInfo inputTypeName' >" + name + "</a>" + " - " + "<a class='inputTypeInfo inputTypeUrl' >"+ url + "</a>";
+    dt.innerHTML += "<a class='removeInputType' onclick='removeInputType(" + id + ")'> &times; </a><i class='fa fa-edit editInputType' onclick='editType(" + id +")'></i>";
+    dl.appendChild(dt);
+  }
+
+  function saveParty(){
+    if(!document.getElementById("party_name").value){
+      alert("Name your party !");
+      return;
+    }
+    if(document.getElementById("party_name").value.length>15){
+      alert("The Party name has to be less than 15 character long.");
+      return;
+    }
+    var title = document.getElementById("party_name").value;
+
+    $.post("/updateParty",{ "title": title, "id": partyId},function(response){
+      console.log(response);
+      window.location.href = response
+    });
+  }
+
+
+  function removeInputType(id){
+    for(i = 0; i < inputTypeList.length; i++){
+      if(inputTypeList[i]["id"]===id){
+        inputTypeList.splice(i, 1);
+      }
+    }
+    $.post("/removeInputType",{ "id": id, "party_id":partyId},function(response){
+      console.log(response);
+    });
+    updateHTML();
+  }
+
+  function editType(id){
+    for(i = 0; i < inputTypeList.length; i++){
+      if(inputTypeList[i]["id"]===id){
+        document.getElementById("input_name").value = inputTypeList[i]["name"];
+        document.getElementById("input_name").name = id;
+        document.getElementById("input_url").value = inputTypeList[i]["url"];
+        inputTypeList.splice(i, 1);
+      }
+    }
+    updateHTML();
+  }
+
+  function addType(){
+    var name = document.getElementById("input_name").value;
+    var id = Number(document.getElementById("input_name").name);
+    var url = document.getElementById("input_url").value;
+    $.post("/addInputType",{ "name": name, "url":url, "id":id, "party_id":partyId },function(response){
+      console.log(response);
+      addTypeToDB(response);
+    });
+
+
+    document.getElementById("input_name").value = "";
+    document.getElementById("input_name").name = "-1";
+    document.getElementById("input_url").value = "";
+  }
+
+
+  function addTypeToDB(response){
+    var id = response["id"];
+    var isUpdate = false;
+    for(i = 0; i < inputTypeList.length; i++){
+      if(inputTypeList[i]["id"]===id){
+        inputTypeList[i] = response;
+        isUpdate = true;
+      }
+    }
+    if(!isUpdate)inputTypeList.push(response);
+    updateHTML();
+
+  }
+
+
+  function getUrlVars() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
+      vars[key] = value;
     });
     return vars;
-}
+  }
 
 
 </script>
