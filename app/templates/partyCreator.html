@@ -17,7 +17,7 @@
   <button class="btn right" onclick="window.location.href='/';" type="button">home</button>
 
   <div class="col-12">
-    <h1 class="center" >Party creation:</h1>
+    <h1 class="center" >Party creation</h1>
   </div>
   <br>
   <br>
@@ -168,6 +168,10 @@
 
   function addType(){
     var name = document.getElementById("input_name").value;
+    if(name === ""){
+      alert("Please enter at least a Type Name");
+      return;
+    }
     var id = Number(document.getElementById("input_name").name);
     var url = document.getElementById("input_url").value;
     $.post("/api/addInputType",{ "name": name, "url":url, "id":id, "party_id":partyId },function(response){
@@ -206,7 +210,7 @@
   }
 
 function deleteParty(){
-  var r = confirm("Are you sure to remove Party n°"+ partyId + " ?");
+  var r = confirm("Are you sure you want to DELETE this party?");
   if(!r){
     return;
   }

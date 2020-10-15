@@ -78,6 +78,7 @@ input.player_email {
   color: var(--main-ft-color);
   background: var(--main-bt-color);
   text-decoration: none;
+  box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
 }
 
 .input_btn{
