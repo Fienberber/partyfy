@@ -18,11 +18,9 @@
 </div>
 <div class="row">
   <div class="col-3">
-     
   </div>
-
   <div class="col-6 center">
-
+    <button class="bubbly-button">Play!</button>
 		<h2 class="render" id="render_text">Create inputs !</h2>
     <div class="aside center">
       <nav>
@@ -66,6 +64,24 @@ var partiesInputCount = [80, 50, 120, 123];
 function loadUpdate(){
   getParties();
   getInvitedParties();
+
+
+  var bubblyButtons = document.getElementsByClassName("bubbly-button");
+
+  for (var i = 0; i < bubblyButtons.length; i++) {
+    bubblyButtons[i].addEventListener('click', function(e) {
+
+          e.preventDefault;
+          //reset animation
+          e.target.classList.remove('animate');
+
+          e.target.classList.add('animate');
+          setTimeout(function(){
+            e.target.classList.remove('animate');
+            window.location.href='play';
+          },700);
+          }, false);
+  }
 }
 
 function updatePartyList(data){
@@ -166,6 +182,7 @@ function share(token){
   link = "http://localhost:8000/login?token=" + token;
   prompt('Press Ctrl + C, then Enter to copy to clipboard',link);
 }
+
 
 </script>
 

@@ -41,9 +41,17 @@ class Party(db.Model):
         for i in usersInParty:
             i.delete()
 
+    def deleteInputs(self):
+        from app.input import Input
+
+        inputs = Input.query.filter_by(party_id=self.id).all()
+        for i in inputs:
+            i.delete()
+
     def delete(self):
         self.deleteInputTypes()
         self.deleteUsers()
+        self.deleteInputs()
         db.session.delete(self)
         db.session.commit()
 

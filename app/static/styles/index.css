@@ -15,14 +15,13 @@ html, body {
 
 .intro {
     font-family: 'futura', 'helvetica', sans-serif;
-    // text-transform: uppercase;
     color: #fafafa;
     position: absolute;
     z-index: 10;
     top: 40%;
     width: 100%;
+    float: center;
     font-size: 2em;
-    text-align: center;
     transition: opacity 2s;
 }
 
@@ -30,4 +29,11 @@ html, body {
 	opacity: 0;
 }
 
+.center {
+  width: 80%;
+  text-align: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 
