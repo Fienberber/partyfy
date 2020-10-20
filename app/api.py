@@ -1,5 +1,6 @@
 from flask import request, session, jsonify, redirect, abort
 from app import app
+from app.user import User
 from app.input import Input
 from app.party import Party
 from app.userParty import UserParty
@@ -234,3 +235,37 @@ def removeInput():
                                     id=_input_id).first().delete()
     
     return "ok"
+
+
+@protectedApi
+@app.route('/api/getPlayers', methods=['POST'])
+def getPlayers():
+    """Return all the Players in the party"""
+    _token = request.form.to_dict()["partyToken"]
+
+    join = User.query.join(UserParty)
+    party = Party.query.filter_by(token=_token).first()
+
+    players = join.filter(UserParty.party_id == party.id).all()
+    
+    return jsonify(players=[i.serialize for i in players])
+
+
+@protectedApi
+@app.route('/api/getInputs', methods=['POST'])
+def getInputs():
+    """Return all the Inputs in the party"""
+    _token = request.form.to_dict()["partyToken"]
+
+    party = Party.query.filter_by(token=_token).first()
+    inputs = Input.query.filter_by(party_id=party.id).all()
+    
+    return jsonify(inputs=[i.serialize for i in inputs])
+
+@protectedApi
+@app.route('/api/getParties', methods=['POST'])
+def getParties():
+    """Return all the Parties the player can play"""
+
+    parties = Party.query.filter_by(creator_id=session.get("user_id")).all()
+    return jsonify(parties=[i.serialize for i in parties])

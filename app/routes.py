@@ -40,6 +40,14 @@ def inputEditor():
     else:
         return render_template('inputEditor.html')
 
+@app.route('/gameEngine', methods=['GET'])
+def gameEngine():
+    """Game Engine"""
+    if not session.get('user_id'):
+        return render_template('index.jinja2')
+    else:
+        return render_template('gameEngine.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

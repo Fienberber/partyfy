@@ -1,0 +1,239 @@
+:root {
+  --main-bg-color: linear-gradient(-225deg, #7DE2FC 0%, #B9B6E5 100%);/* Background color */
+  --main-ft-color: #283845;/* Font color */
+  --main-bt-color: #EE4266;/* Button color */
+}
+
+
+body {
+  color : var(--main-ft-color);
+  font-family: "Geneva", sans-serif;
+  margin: 20px;
+
+  background-image: var(--main-bg-color);
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  background-size: cover;
+}
+
+h1 {
+  font-family: 'futura', 'helvetica', sans-serif;
+  color: white;
+  font-size: 4em;
+}
+
+
+input {
+  display: inline-block;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  padding: 10px 20px 10px 25px;
+  margin: 20px;
+  border: none;
+  -webkit-border-radius: 30px;
+  font-size: 20px;
+  border-radius: 30px;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+}
+
+input.player_name, input.player_email {
+  display: inline-block;
+  width : 100px;
+  padding: 10px 15px 10px 15px;
+  margin: 5px;
+  border: none;
+  -webkit-border-radius: 30px;
+  font-size: 15px;
+  border-radius: 30px;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+}
+
+input.player_email {
+  width : 200px;
+}
+
+.addButton{
+  font-size: 30px;
+}
+
+
+.btn {
+  -webkit-border-radius: 40;
+  -moz-border-radius: 40;
+  border-radius: 40px;
+  font-family: Arial;
+  color: white;
+  background: var(--main-bt-color);
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  border: none;
+  transition-duration: 0.5s;
+}
+
+.btn:hover {
+  color: var(--main-ft-color);
+  background: var(--main-bt-color);
+  text-decoration: none;
+  box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+}
+
+.input_btn{
+  text-align: right;
+  margin: 20px 20px 20px 0px;
+}
+
+
+.delete_btn {
+  background-color: red;
+  visibility:hidden;
+}
+
+.delete_btn:hover {
+  background-color: black;
+  color :white;
+}
+
+
+dt{
+  background-color: white;
+  border-radius: 50px;
+  border: solid;
+  border-color: var(--main-bt-color);
+  font-size: 20px;
+  margin: 10px;
+}
+
+
+dt.deselected{
+  border-color: gray;
+}
+
+nav dl{
+  border: solid ;
+  border-width: 10px ;
+  border-radius: 40px;
+  background-color: var(--main-ft-color);
+  box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+  height:400px;
+}
+nav dl{
+  overflow:hidden; 
+  overflow-y:scroll;
+}
+
+.removeInputType{
+  margin:  0px 15px 0px 0px;
+  float: right;
+}
+
+.editInputType{
+  margin:  5px 8px 0px 0px;
+  float: right;
+}
+
+.party{
+}
+
+
+
+
+
+.aside{
+  width : 500px;
+  display: inline-block;
+}
+
+.openbtn {
+  font-size:30px;
+  cursor:pointer;
+}
+
+.center {
+  text-align: center;
+  float: center;
+}
+
+.left {
+  text-align: left;
+  float: left;
+}
+
+.right {
+  text-align: right;
+  float: right;
+}
+
+/* For desktop: */
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [class*="col-"] {
+    width: 100%;
+  }
+}
+
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+}
+
+
+.row::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+
+
+span.input {
+  margin: 28px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
