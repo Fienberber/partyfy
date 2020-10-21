@@ -126,7 +126,7 @@ function updatePlayerNumber(){
 function getInputTypes(){
   $.post("/api/getTypes",{ "partyToken": partyToken },function(response){
     console.log(response);
-    updateTypesList(response["json_list"]);
+    updateTypesList(response["types"]);
   });
 }
 

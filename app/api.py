@@ -154,16 +154,6 @@ def removeInputType():
     return "ok"
 
 
-@protectedApi
-@app.route('/api/getTypes', methods=['POST'])
-def getTypes():
-    """Return the input types"""
-    partyToken = request.form.to_dict()
-    partyToken = partyToken["partyToken"]
-    partyId = Party.query.filter_by(token=partyToken).first().id
-    types = InputType.query.filter_by(party_id=partyId).all()
-    return jsonify(json_list=[i.serialize for i in types])
-
 
 @protectedApi
 @app.route('/api/getInput', methods=['POST'])
@@ -261,6 +251,17 @@ def getInputs():
     inputs = Input.query.filter_by(party_id=party.id).all()
     
     return jsonify(inputs=[i.serialize for i in inputs])
+
+@protectedApi
+@app.route('/api/getTypes', methods=['POST'])
+def getTypes():
+    """Return all the Inputs in the party"""
+    _token = request.form.to_dict()["partyToken"]
+
+    party = Party.query.filter_by(token=_token).first()
+    types = InputType.query.filter_by(party_id=party.id).all()
+    
+    return jsonify(types=[i.serialize for i in types])
 
 @protectedApi
 @app.route('/api/getParties', methods=['POST'])
