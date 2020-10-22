@@ -3,6 +3,8 @@ The UBER of collaborative party game
 
 # To do
 - Add the change password page
+- Test the game engine
+- The Smart lighting feature
 
 # Usage
 ```
