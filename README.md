@@ -2,10 +2,7 @@
 The UBER of collaborative party game
 
 # To do
-- List the players invited to the party (in the input creator).
 - Add the change password page
-- Tune the timing (for smart lighting)
-- Add the ability to choose the delay between two inputs
 
 # Usage
 ```

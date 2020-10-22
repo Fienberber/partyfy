@@ -35,14 +35,27 @@
       <div class="control-group">
         <label class="control control-checkbox">
           Smart interaction
-          <input type="checkbox" onclick="useSmartLighting=!useSmartLighting;" />
+          <input type="checkbox" onclick="toggleSmartLight();" />
           <div class="control_indicator"></div>
         </label>
+        <br>
         <label class="control control-checkbox">
           Text to speech
           <input type="checkbox" onclick="EnableTTS=!EnableTTS;" />
           <div class="control_indicator"></div>
         </label>
+        <br>
+        <div>
+          <label for="inputDelay">Delay between two inputs in seconds</label>
+          <br>
+          <input type="text" id="inputDelay" name="inputDelay" placeholder="60">
+        </div>
+        <br>
+        <div id="lightDelayDiv" style="display:none;">
+          <label for="lightDelay">Time (in ms) between light and input to trigger</label>
+          <br>
+          <input type="text" id="lightDelay" name="lightDelay" placeholder="0">
+        </div>
       </div>
       <h2>Players Selection:</h2>
       <div class="aside center">
@@ -118,6 +131,9 @@
   var inputs;
   var types;
   var game = {"players":[], "inputs":[]}
+
+  var inputDalay = 60000;
+  var lightDelay = 0;
 
   function loadUpdate(){
     toggleSettings();
@@ -269,7 +285,7 @@
       document.getElementById("modeButton").innerHTML = "Settings";
       setGameVariable();
       nextInput();
-      autoPlayID = setInterval(function(){nextInput();}, 20000);
+      autoPlayID = setInterval(function(){nextInput();}, inputDelay);
     }
     else{
       clearInterval(autoPlayID);
@@ -282,6 +298,13 @@
 
 
   function setGameVariable(){
+    inputDelay = document.getElementById("inputDelay").value * 1000;
+    if(useSmartLighting){
+      lightDelay = document.getElementById("lightDelay").value;
+    }
+    else {
+      lightDelay = 0;
+    }
     game["inputs"] = inputs.slice();
     game["players"] = players.slice();;
 
@@ -315,16 +338,25 @@
     if(useSmartLighting){
       sendSmartRequest(input);
     }
+    setTimeout(function(){ goNext(index, input); }, lightDelay);
+  }
+
+  function goNext(index, input){
     document.getElementById("inputType").innerHTML = getTypeName(input);
     document.getElementById("inputTitle").innerHTML = input["title"];
     document.getElementById("inputContent").innerHTML = getInputContent(input);
     game["inputs"].splice(index, 1);
   }
 
+
+
   function getTypeName(input){
     type_id = input["type_id"];
     for(i = 0; i < types.length; i++){
       if(types[i]["id"] == type_id){
+        if(EnableTTS){
+          tts(types[i]["name"]);
+        }
         return types[i]["name"];
       }
     }
@@ -348,7 +380,7 @@
       input_text = input_text.replace("[players]", outputText);
     }
     if(EnableTTS){
-      tts(input_text);
+      setTimeout(function(){ tts(input_text); }, 2000);
     }
     return input_text;
   }
@@ -363,10 +395,23 @@
     type_id = input["type_id"];
     for(i = 0; i < types.length; i++){
       if(types[i]["id"] == type_id){
-        $.get(types[i]["url"],function(response){
+
+        console.log(types[i]["url"]);
+        /*$.get(types[i]["url"],function(response){
+
           console.log(response);
-        });
+        });*/
       }
+    }
+  }
+
+  function toggleSmartLight(){
+    useSmartLighting=!useSmartLighting;
+    if(useSmartLighting){
+      document.getElementById("lightDelayDiv").style.display = "block";
+    }
+    else{
+      document.getElementById("lightDelayDiv").style.display = "none";
     }
   }
 

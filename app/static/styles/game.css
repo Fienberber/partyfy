@@ -164,11 +164,11 @@ label {
   font-family: arial;
   display: block;
   position: relative;
-  padding-left: 30px;
-  margin-bottom: 5px;
-  padding-top: 3px;
+  padding-left: 45px;
+  margin-bottom: 7px;
+  padding-top: 4px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 24px;
 }
 .control input {
   position: absolute;
@@ -177,10 +177,10 @@ label {
 }
 .control_indicator {
   position: absolute;
-  top: 2px;
+  top: 3px;
   left: 0;
-  height: 20px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
   background: #e6e6e6;
   border: 0px solid #000000;
   border-radius: 0px;
@@ -209,12 +209,12 @@ label {
   display: block;
 }
 .control-checkbox .control_indicator:after {
-  left: 8px;
-  top: 4px;
-  width: 3px;
-  height: 8px;
+  left: 12px;
+  top: 6px;
+  width: 4px;
+  height: 12px;
   border: solid #ffffff;
-  border-width: 0 2px 2px 0;
+  border-width: 0 3px 3px 0;
   transform: rotate(45deg);
 }
 
