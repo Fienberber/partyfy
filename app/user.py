@@ -25,6 +25,10 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def setPassword(self, passwd):
+        self.password = sha256(passwd.encode('utf-8')).hexdigest()
+        db.session.commit()
+
     def verifyPassword(self, passwd):
         return(self.password == sha256(passwd.encode('utf-8')).hexdigest())
 

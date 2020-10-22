@@ -130,6 +130,7 @@ dmypy.json
 
 # Secrets
 secrets.py
+smtp_setup.py
 user.db
 
 # Fucking macos

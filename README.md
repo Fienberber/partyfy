@@ -2,7 +2,6 @@
 The UBER of collaborative party game
 
 # To do
-- Add the change password page
 - Test the game engine
 - The Smart lighting feature
 
@@ -24,110 +23,40 @@ python3 main.py
 Now access http://127.0.0.1:8000
 
 
+You have to create a `smtp_setup.py` file to enable the "change password" feature.
+
+This is the content required:
+``` python
+smtp_server = "mail.domain.net"
+port = 465 
+sender_email = "sender_email@domain"
+password = "*********"
+
+```
+
+For the secret part, you will need a `secret.py` file:
+```python
+SECRET_KEY = b'*******************'
+```
+
 # Features
+This project is a collaborative game. 
 
-## Light animation
-When a new input is displayed it can change the light color. 
+The goal of this game is to make evenings with friends more fun.
 
-### Technical solution
-The web client is going to make a request (undefined right now) for each input type. 
+Invite your friends and let them create there own inputs (private jokes alowed). 
 
-## Database technical solution 
-¯\\(◉‿◉)/¯
+When you have enough inputs (you can create them before the real party) you can PLAY.
+Select you party, your players and start. 
 
-## Web server
-Flask because python is easy. 
+It will play by itself (no game master needed). Your browser can read the inputs (if supported). And the participants will be automatically generated. 
 
-## Process 
-The web server is just going to send the data from the database to the client. The rest (text to speech, lighting, ...) will be handled by the client (js). 
+You can optionnaly add smart lighting to the game. The lightings are synced to the input types. The types represent what ever you want.
+For example a type could be "Quizz" the light would alert everyone that a quizz is comming and then the voice will read the input. 
 
-
-
-# Web pages 
-
-### Login
-Login page. 
-
-### Party selection 
-Page accessed by a player. It list the parties your in and the people invited to this party.
-
-If your are the creator you can access extra setting 
-
-If you are just invited, you can select a party to add inputs
-
-You can create a party.
+The possiblilities are quite wide so explore them and have fun. 
 
 
-### Party creation/edit
-Page accessed by a player to create or modify party settings. 
-Like : 
-- name
-- invited players
-- input types
-  * name 
-  * post request (light)
-
-### Input creation
-This page allow the player to create inputs for the party. 
-
-The UI will allow the user to see the full input list (his input). 
-
-On the creation side, you can select n random people OR just write whatever you want. A button will be added to read the input as it will during the game. 
-
-### Game page
-
-Just display the input content (can add the random players list). 
-
-The player can go to the next one and the previous one. 
-
-The inputs will change automatically depending on the number of inputs.
-
-
-# Database
-
-## Party 
-| Name  |  Type | Ex  |
-|---|---|---|
-| party_id  | number [unique] |   |
-| title  | string  |   |
-| creator_id  | number  |   |
-
-
-## PartyPlayer
-| Name  |  Type | Ex  |
-|---|---|---|
-| party_id  | number |   |
-| player_id  | number  |   |
-
-
-## Player
-| Name  |  Type | Ex  |
-|---|---|---|
-| player_id  | number [unique] |   |
-| first_name  | string  |   |
-| last_name  | string  |   |
-| can_create_party  | bool | for beta stage  |
-
-
-
-## Input
-| Name  |  Type | Ex  |
-|---|---|---|
-| input_id  | number [unique] |   |
-| title  | string  |   |
-| type_id  | type_id  |   |
-| party_id  | party_id  |   |
-| repeat  | number [-1 infinity, n for n repetitions]  |   |
-| random_target  | number | (number of people targeted by the random selector)  |
-| input_content | string |   |
-
-
-## InputType 
-| Name  |  Type | Ex  |
-|---|---|---|
-| id  | number [unique]  |   |
-| type_name  | string  |   |
-| party_id  | number |   |
-| url  | string [optional] |   |
+Sorry for the french content. We play with french people so it's easier.
 
 
