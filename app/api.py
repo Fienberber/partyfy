@@ -270,3 +270,5 @@ def getParties():
 
     parties = Party.query.filter_by(creator_id=session.get("user_id")).all()
     return jsonify(parties=[i.serialize for i in parties])
+
+    

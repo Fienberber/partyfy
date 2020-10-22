@@ -1,6 +1,7 @@
 from flask import request, render_template, jsonify, session, redirect
 from app import app
 from app import api
+from app import mail
 from app.user import User
 from app.party import Party
 from app.userParty import UserParty
@@ -48,6 +49,11 @@ def gameEngine():
     else:
         return render_template('gameEngine.html')
 
+@app.route('/newPassword', methods=['GET'])
+def newPassword():
+    """Password Management"""
+    return render_template('NewPassword.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -92,6 +98,31 @@ def signup():
                    msg="Compte créé! Plus qu'à se connecter 🥳")
 
 
+@app.route('/changePass', methods=['POST'])
+def changePass():
+    """Changes the password"""
+    old_Pass = request.form.to_dict()["oldPass"]
+    new_Pass = request.form.to_dict()["newPass"]
+    _email = request.form.to_dict()["email"]
+
+    user = User.query.filter_by(email=_email).first()
+    if(user.verifyPassword(old_Pass)):
+        user.setPassword(new_Pass)
+        return "Password Changed successfully"
+
+    return "Wrong password, try again or request a new one."
+
+
+@app.route('/getNewPass', methods=['POST'])
+def getNewPass():
+    """Send an email with a new random generated password"""
+    _email = request.form.to_dict()["email"]
+    if(mail.sendNewPassword(_email)):
+        return "The new password has been sent, please check your inbox"
+
+    return "An error has occured, please try again"
+
+
 @app.route('/logout', methods=['GET'])
 def logout():
     """Handle user logout"""
@@ -112,3 +143,4 @@ def setup():
     Input.dbSetup()
     InputType.dbSetup()
     return "Setup complete"
+
