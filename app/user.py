@@ -27,3 +27,10 @@ class User(db.Model):
 
     def verifyPassword(self, passwd):
         return(self.password == sha256(passwd.encode('utf-8')).hexdigest())
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {'id': self.id,
+                'username': self.username,
+                'email': self.email}

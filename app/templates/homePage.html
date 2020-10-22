@@ -78,7 +78,7 @@ function loadUpdate(){
           e.target.classList.add('animate');
           setTimeout(function(){
             e.target.classList.remove('animate');
-            window.location.href='play';
+            window.location.href='gameEngine';
           },700);
           }, false);
   }
@@ -119,11 +119,11 @@ function updateInvPartyList(data){
 }
 
 function createSpan(context, value) {
-    var button = document.createElement("span");
-    button.innerHTML = value;
-    button.classList.add('input');
-    button.classList.add('left');
-    context.appendChild(button);
+    var span = document.createElement("span");
+    span.innerHTML = value;
+    span.classList.add('input');
+    span.classList.add('left');
+    context.appendChild(span);
 }
 
 function createAddInputButton(context, func, value) {

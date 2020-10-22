@@ -2,8 +2,9 @@
 The UBER of collaborative party game
 
 # To do
-- List the players invited to the party (in the input creator).
-- Make the game engine (it's a big chunk).
+- Add the change password page
+- Test the game engine
+- The Smart lighting feature
 
 # Usage
 ```

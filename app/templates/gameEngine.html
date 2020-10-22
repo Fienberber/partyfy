@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Partyfy home page</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../static/styles/game.css">
+  <link rel="stylesheet" href="{{ url_for('static',filename='styles/game.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
+
+</head>
+<body onload="loadUpdate()">
+
+  <button class="btn right" onclick="window.location.href='/';" type="button">home</button>
+  <button id="modeButton" class="btn left" onclick="toggleSettings()" type="button">toggle</button>
+
+  <br>
+  <br>
+  <br>
+
+  <div class="row" id="settings">
+    <div class="col-6">
+      <h2>Party Selection:</h2>
+      <div class="aside center">
+        <nav>
+          <dl class="partiesList" id="partiesList">
+          </dl>
+        </nav>
+      </div>
+
+
+    </div>
+    <div class="col-6">
+      <div class="control-group">
+        <label class="control control-checkbox">
+          Smart interaction
+          <input type="checkbox" onclick="toggleSmartLight();" />
+          <div class="control_indicator"></div>
+        </label>
+        <br>
+        <label class="control control-checkbox">
+          Text to speech
+          <input type="checkbox" onclick="EnableTTS=!EnableTTS;" />
+          <div class="control_indicator"></div>
+        </label>
+        <br>
+        <div>
+          <label for="inputDelay">Delay between two inputs in seconds</label>
+          <br>
+          <input type="text" id="inputDelay" name="inputDelay" placeholder="60">
+        </div>
+        <br>
+        <div id="lightDelayDiv" style="display:none;">
+          <label for="lightDelay">Time (in ms) between light and input to trigger</label>
+          <br>
+          <input type="text" id="lightDelay" name="lightDelay" placeholder="0">
+        </div>
+      </div>
+      <h2>Players Selection:</h2>
+      <div class="aside center">
+        <nav>
+          <dl class="playersList" id="playersList">
+          </dl>
+        </nav>
+      </div>
+
+      <h2>Inputs Selection:</h2>
+      <div class="aside center">
+        <nav>
+         <dl class="inputsList" id="inputsList">
+         </dl>
+       </nav>
+     </div>
+   </div>
+ </div>
+
+ <div class="row game" id="gameEngine">
+  <div class="col-2 prev" >
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 ><</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+  </div>
+  <div class="col-8 center">
+    <h1 id="inputType" class="inputType">Type</h1>
+    <h1 id="inputTitle" class="inputTitle">Title</h1>
+    <h1 id="inputContent" class="inputContent">Content</h1>
+
+  </div>
+  <div class="col-2 next" onclick="nextInput();">
+
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 class="right">></h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+    <h2 >&nbsp;</h2>
+
+
+  </div>
+</div>
+
+
+<script>
+  var partyId = -1;
+  var partyToken = -1;
+  var useSmartLighting = false;
+  var EnableTTS = false;
+
+  var parties;
+  var players;
+  var inputs;
+  var types;
+  var game = {"players":[], "inputs":[]}
+
+  var inputDalay = 60000;
+  var lightDelay = 0;
+
+  function loadUpdate(){
+    toggleSettings();
+    getParties();
+  }
+
+  function getParties(){
+    $.post("/api/getParties",{"partyToken":partyToken },function(response){
+      console.log(response);
+      parties = response["parties"];
+      updatePartiesList();
+    });
+  }
+
+  function getPlayers(){
+    $.post("/api/getPlayers",{"partyToken":partyToken },function(response){
+      console.log(response);
+      players = response["players"];
+      updatePlayersList();
+    });
+  }
+
+  function getInputs(){
+    $.post("/api/getInputs",{"partyToken":partyToken },function(response){
+      console.log(response);
+      inputs = response["inputs"];
+      updateInputsList();
+    });
+  }
+
+  function getTypes(){
+    $.post("/api/getTypes",{"partyToken":partyToken },function(response){
+      console.log(response);
+      types = response["types"];
+    });
+  }
+
+  function updatePartiesList(){
+    var partyList = document.getElementById("partiesList");
+    while (partyList.firstChild) {
+      partyList.removeChild(partyList.firstChild);
+    }
+    for(i = 0; i < parties.length; i++){
+
+      var dt = document.createElement("dt"); 
+      dt.classList.add('party');
+      dt.innerHTML = parties[i]["title"];
+      dt.name = parties[i]["token"];
+      dt.addEventListener('click', function(){ 
+        selectParty(this);
+      }, false);
+      partyList.appendChild(dt);
+    }
+  }
+
+  function selectParty(dt){
+    partyToken = dt.name;
+    var partyList = document.getElementById("partiesList").children;
+    for ( var i = 0; i < partyList.length; i++) {
+      partyList[i].classList.add('deselected');
+    }
+    dt.classList.toggle('deselected');
+    getPlayers();
+    getInputs();
+    getTypes();
+  }
+
+
+
+  function updatePlayersList(){
+    var playersList = document.getElementById("playersList");
+    while (playersList.firstChild) {
+      playersList.removeChild(playersList.firstChild);
+    }
+    for(i = 0; i < players.length; i++){
+      var dt = document.createElement("dt"); 
+      dt.classList.add('player');
+      dt.innerHTML = players[i]["username"];
+      dt.name = players[i]["id"];
+      dt.addEventListener('click', function(){ 
+        togglePlayer(this);
+      }, false);
+      playersList.appendChild(dt);
+    }
+  }
+
+  function updateInputsList(){
+    var inputList = document.getElementById("inputsList");
+    while (inputList.firstChild) {
+      inputList.removeChild(inputList.firstChild);
+    }
+    for(i = 0; i < inputs.length; i++){
+
+      var dt = document.createElement("dt"); 
+      dt.classList.add('input');
+      dt.innerHTML = inputs[i]["title"];
+      dt.name = inputs[i]["id"];
+      dt.addEventListener('click', function(){ 
+        toggleInput(this);
+      }, false);
+      inputList.appendChild(dt);
+    }
+  }
+
+
+  function togglePlayer(elmnt){
+    elmnt.classList.toggle('deselected');
+    id = elmnt.name;
+    for(i = 0; i < players.length; i++){
+      if(id == players[i]["id"]){
+        if(players[i]["email"] == ""){
+          players[i]["email"] = "AAA";
+        }
+        else{
+          players[i]["email"] = "";
+        }
+      }
+    }
+  }
+
+  function toggleInput(elmnt){
+    elmnt.classList.toggle('deselected');
+    id = elmnt.name;
+    for(i = 0; i < inputs.length; i++){
+      if(id == inputs[i]["id"]){
+        if(inputs[i]["party_id"] == ""){
+          inputs[i]["party_id"] = "AAA";
+        }
+        else{
+          inputs[i]["party_id"] = "";
+        }
+      }
+    }
+  }
+
+
+
+  var autoPlayID;
+
+  var settingsVisible = false;
+  function toggleSettings(){
+    if(settingsVisible){
+      if(inputs == null){
+        alert("Select a party");
+        return;
+      }
+      document.getElementById("settings").style.display = "none";
+      document.getElementById("gameEngine").style.display = "block";
+      document.getElementById("modeButton").innerHTML = "Settings";
+      setGameVariable();
+      nextInput();
+      autoPlayID = setInterval(function(){nextInput();}, inputDelay);
+    }
+    else{
+      clearInterval(autoPlayID);
+      document.getElementById("settings").style.display = "block";
+      document.getElementById("gameEngine").style.display = "none";
+      document.getElementById("modeButton").innerHTML = "Play!";
+    }
+    settingsVisible = !settingsVisible;
+  }
+
+
+  function setGameVariable(){
+    inputDelay = document.getElementById("inputDelay").value * 1000;
+    if(useSmartLighting){
+      lightDelay = document.getElementById("lightDelay").value;
+    }
+    else {
+      lightDelay = 0;
+    }
+    game["inputs"] = inputs.slice();
+    game["players"] = players.slice();;
+
+    list = game["inputs"]
+    for(i = 0; i < list.length; i++){
+      if(list[i]["party_id"] == ""){
+        list.splice(i, 1);
+        i--;
+      }
+    }
+    list = game["players"]
+    for(i = 0; i < list.length; i++){
+      if(list[i]["email"] == ""){
+        list.splice(i, 1);
+        i--;
+      }
+    }
+    console.log(game);
+  }
+
+  function nextInput(){
+    if(game["inputs"].length == 0){
+      clearInterval(autoPlayID);
+      document.getElementById("inputType").innerHTML = "END :)";
+      document.getElementById("inputTitle").innerHTML = "";
+      document.getElementById("inputContent").innerHTML = "Selectionne une autre partie pour continuer";
+      return;
+    }
+    var index = Math.floor(Math.random() * game["inputs"].length);
+    input = game["inputs"][index];
+    if(useSmartLighting){
+      sendSmartRequest(input);
+    }
+    setTimeout(function(){ goNext(index, input); }, lightDelay);
+  }
+
+  function goNext(index, input){
+    document.getElementById("inputType").innerHTML = getTypeName(input);
+    document.getElementById("inputTitle").innerHTML = input["title"];
+    document.getElementById("inputContent").innerHTML = getInputContent(input);
+    game["inputs"].splice(index, 1);
+  }
+
+
+
+  function getTypeName(input){
+    type_id = input["type_id"];
+    for(i = 0; i < types.length; i++){
+      if(types[i]["id"] == type_id){
+        if(EnableTTS){
+          tts(types[i]["name"]);
+        }
+        return types[i]["name"];
+      }
+    }
+    return "ERROR";
+  }
+
+  function getInputContent(input){
+    var input_text = input["content"];
+    if(input_text.includes("[players]")){
+      var numPlayers = input["random_target"];
+      var subPlayers = game["players"].slice();
+      var outputText = "";
+      for (var i = 1; i <= numPlayers; i++) {
+        var random = Math.floor(Math.random() * subPlayers.length);
+        if(i == 1)outputText += subPlayers[random]["username"];
+        else if(i == numPlayers) outputText += " et " + subPlayers[random]["username"];
+        else outputText += ", " + subPlayers[random]["username"];
+
+        subPlayers.splice(random, 1);
+      }
+      input_text = input_text.replace("[players]", outputText);
+    }
+    if(EnableTTS){
+      setTimeout(function(){ tts(input_text); }, 2000);
+    }
+    return input_text;
+  }
+
+  function tts(text) {
+    var msg = new SpeechSynthesisUtterance();
+    msg.text = text;
+    window.speechSynthesis.speak(msg);
+  }
+
+  function sendSmartRequest(input){
+    type_id = input["type_id"];
+    for(i = 0; i < types.length; i++){
+      if(types[i]["id"] == type_id){
+
+        console.log(types[i]["url"]);
+        /*$.get(types[i]["url"],function(response){
+
+          console.log(response);
+        });*/
+      }
+    }
+  }
+
+  function toggleSmartLight(){
+    useSmartLighting=!useSmartLighting;
+    if(useSmartLighting){
+      document.getElementById("lightDelayDiv").style.display = "block";
+    }
+    else{
+      document.getElementById("lightDelayDiv").style.display = "none";
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  function getPartyInfo(token){
+    $.post("/api/getPartyInfo",{ "token": token },function(response){
+      partyId = response["party"][0]["id"];
+      updatePartyInfo(response);
+      console.log(response);
+    });
+  }
+
+
+  function getNewPartyInfo(){
+    $.post("/api/createParty",{ "title": "" },function(response){
+      partyId = response["party"][0]["id"];
+      updatePartyInfo(response);
+      console.log(response);
+    });
+  }
+
+  function updatePartyInfo(response){
+    document.getElementById("party_name").value = response["party"][0]["title"];
+    inputTypeList = response["inputTypes"];
+    updateHTML();
+  }
+
+  function updateHTML(){
+    var htmlList = document.getElementById("inputTypeList");
+    while (htmlList.firstChild) {
+      htmlList.removeChild(htmlList.firstChild);
+    }
+    for(i = 0; i < inputTypeList.length; i++){
+      name = inputTypeList[i]["name"];
+      url = inputTypeList[i]["url"];
+      id = inputTypeList[i]["id"];
+      makeType(id, name, url);
+    }
+  }
+
+  function makeType(id, name, url){
+    var dl = document.getElementById("inputTypeList");
+    var dt = document.createElement("dt"); 
+    dt.classList.add('inputType');
+    dt.innerHTML = "<a class='inputTypeInfo inputTypeName' >" + name + "</a>" + " - " + "<a class='inputTypeInfo inputTypeUrl' >"+ url + "</a>";
+    dt.innerHTML += "<a class='removeInputType' onclick='removeInputType(" + id + ")'> &times; </a><i class='fa fa-edit editInputType' onclick='editType(" + id +")'></i>";
+    dl.appendChild(dt);
+  }
+
+  function saveParty(){
+    if(!document.getElementById("party_name").value){
+      alert("Name your party !");
+      return;
+    }
+    if(document.getElementById("party_name").value.length>15){
+      alert("The Party name has to be less than 15 character long.");
+      return;
+    }
+    var title = document.getElementById("party_name").value;
+
+    $.post("/api/updateParty",{ "title": title, "id": partyId},function(response){
+      console.log(response);
+      window.location.href = response
+    });
+  }
+
+
+  function removeInputType(id){
+    for(i = 0; i < inputTypeList.length; i++){
+      if(inputTypeList[i]["id"]===id){
+        inputTypeList.splice(i, 1);
+      }
+    }
+    $.post("/api/removeInputType",{ "id": id, "party_id":partyId},function(response){
+      console.log(response);
+    });
+    updateHTML();
+  }
+
+  function editType(id){
+    for(i = 0; i < inputTypeList.length; i++){
+      if(inputTypeList[i]["id"]===id){
+        document.getElementById("input_name").value = inputTypeList[i]["name"];
+        document.getElementById("input_name").name = id;
+        document.getElementById("input_url").value = inputTypeList[i]["url"];
+        inputTypeList.splice(i, 1);
+      }
+    }
+    updateHTML();
+  }
+
+  function addType(){
+    var name = document.getElementById("input_name").value;
+    if(name === ""){
+      alert("Please enter at least a Type Name");
+      return;
+    }
+    var id = Number(document.getElementById("input_name").name);
+    var url = document.getElementById("input_url").value;
+    $.post("/api/addInputType",{ "name": name, "url":url, "id":id, "party_id":partyId },function(response){
+      console.log(response);
+      addTypeToDB(response);
+    });
+
+
+    document.getElementById("input_name").value = "";
+    document.getElementById("input_name").name = "-1";
+    document.getElementById("input_url").value = "";
+  }
+
+
+  function addTypeToDB(response){
+    var id = response["id"];
+    var isUpdate = false;
+    for(i = 0; i < inputTypeList.length; i++){
+      if(inputTypeList[i]["id"]===id){
+        inputTypeList[i] = response;
+        isUpdate = true;
+      }
+    }
+    if(!isUpdate)inputTypeList.push(response);
+    updateHTML();
+
+  }
+
+
+  function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+      vars[key] = value;
+    });
+    return vars;
+  }
+
+  function deleteParty(){
+    var r = confirm("Are you sure you want to DELETE this party?");
+    if(!r){
+      return;
+    }
+    sendDeleteParty(partyId);
+  }
+
+  function sendDeleteParty(partyId){
+    $.post("/api/removeParty",{ "id": partyId, "token":partyToken},function(response){
+      console.log(response);
+      window.location.href='/';
+    });
+  }
+
+</script>
+
+</body>
+</html>
+
