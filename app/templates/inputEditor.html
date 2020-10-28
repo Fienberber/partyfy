@@ -3,6 +3,7 @@
 <head>
   <title>Partyfy input editor</title>
   <meta charset="utf-8">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <link rel="stylesheet" href="../static/styles/input.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -12,7 +13,7 @@
   <button class="btn right" onclick="window.location.href='logout';" type="button">logout</button>
   <button class="btn right" onclick="window.location.href='/';" type="button">home</button>
   <div class="col-12">
-    <h1 class="center" >New Year party !</h1>
+    <h1 class="center" id="party_title">...</h1>
   </div>
   <br>
   <br>
@@ -64,7 +65,7 @@
   <div class="col-6 center">
    <h2 >What the input will look like:</h2>
    <button onclick="tts()" type="submit" class="btn"><i class="fa fa-volume-up" aria-hidden="true"></i></button>
-   <h1 class="render" id="render_text">...</h1>
+   <h1 class="render" id="render_text"></h1>
   </div>
   <div class="col-6 center">
     <div class="aside">
@@ -102,10 +103,18 @@
    updatePlayerNumber();
 
    partyToken = $.urlParam('partyToken');
-   getInputTypes();
+   getParty();
    getInputList();
    getPlayers();
  }
+
+ function getParty(){
+  $.post("/api/getPartyInfo",{"token":partyToken},function(response){
+    console.log(response);
+    document.getElementById("party_title").innerHTML = response["party"][0]["title"];
+    updateTypesList(response["inputTypes"]);
+  });
+}
 
  function getInputList(){
   $.post("/api/getInputList",{"token":partyToken},function(response){
@@ -122,13 +131,6 @@ function updatePlayerNumber(){
    option.text = i;
    select.add(option);
  }
-}
-
-function getInputTypes(){
-  $.post("/api/getTypes",{ "partyToken": partyToken },function(response){
-    console.log(response);
-    updateTypesList(response["types"]);
-  });
 }
 
 function updateTypesList(data){

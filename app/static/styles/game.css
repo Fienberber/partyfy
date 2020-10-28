@@ -163,7 +163,7 @@ label {
 .control {
   font-family: arial;
   display: block;
-  position: relative;
+  position: sticky;
   padding-left: 45px;
   margin-bottom: 7px;
   padding-top: 4px;
@@ -218,6 +218,12 @@ label {
   transform: rotate(45deg);
 }
 
+.control-group { 
+  margin-left: auto;
+  margin-right: auto;
+  width: 240px;
+  align-content: center;
+}
 
 
 .aside{
@@ -259,7 +265,7 @@ label {
 .col-11 {width: 91.66%;}
 .col-12 {width: 100%;}
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1200px) {
   /* For mobile phones: */
   [class*="col-"] {
     width: 100%;

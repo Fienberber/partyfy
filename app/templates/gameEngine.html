@@ -3,6 +3,7 @@
 <head>
   <title>Partyfy home page</title>
   <meta charset="utf-8">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <link rel="stylesheet" href="../static/styles/game.css">
   <link rel="stylesheet" href="{{ url_for('static',filename='styles/game.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -19,7 +20,7 @@
   <br>
   <br>
 
-  <div class="row" id="settings">
+  <div class="row center" id="settings">
     <div class="col-6">
       <h2>Party Selection:</h2>
       <div class="aside center">
@@ -38,12 +39,15 @@
           <input type="checkbox" onclick="toggleSmartLight();" />
           <div class="control_indicator"></div>
         </label>
+      </div>
         <br>
+        <div class="control-group">
         <label class="control control-checkbox">
           Text to speech
           <input type="checkbox" onclick="EnableTTS=!EnableTTS;" />
           <div class="control_indicator"></div>
         </label>
+      </div>
         <br>
         <div>
           <label for="inputDelay">Delay between two inputs in seconds</label>
@@ -132,7 +136,7 @@
   var types;
   var game = {"players":[], "inputs":[]}
 
-  var inputDalay = 60000;
+  var inputDelay = 60000;
   var lightDelay = 0;
 
   function loadUpdate(){
@@ -298,7 +302,10 @@
 
 
   function setGameVariable(){
-    inputDelay = document.getElementById("inputDelay").value * 1000;
+    var userDelay = document.getElementById("inputDelay").value;
+    if(userDelay > 10){
+      inputDelay = document.getElementById("inputDelay").value * 1000;
+    }
     if(useSmartLighting){
       lightDelay = document.getElementById("lightDelay").value;
     }
