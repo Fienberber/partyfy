@@ -1,4 +1,5 @@
-from flask import request, render_template, jsonify, session, redirect
+from flask import request, render_template, jsonify, session, redirect, send_from_directory
+import os
 from app import app
 from app import api
 from app import mail
@@ -23,6 +24,10 @@ def index():
 
         return render_template('homePage.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico')
 
 @app.route('/partyCreator', methods=['GET'])
 def partyCreator():
