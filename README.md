@@ -1,6 +1,36 @@
 # partyfy
 The UBER of collaborative party game
 
+
+# Intro (how to use the website)
+
+![alt text](pictures/AccountCreation.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # To do
 - Test the game engine
 - The Smart lighting feature
