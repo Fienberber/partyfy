@@ -1,6 +1,8 @@
 # partyfy
 The UBER of collaborative party game
 
+Visit the website: [Partyfy!](https://partyfy.tfbr.me).
+
 # Introduction
 This project is a collaborative game. 
 
