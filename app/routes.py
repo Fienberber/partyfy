@@ -1,4 +1,5 @@
-from flask import request, render_template, jsonify, session, redirect, send_from_directory
+from flask import request, render_template, jsonify, session, redirect,\
+                  send_from_directory
 import os
 from app import app
 from app import api
@@ -24,10 +25,12 @@ def index():
 
         return render_template('homePage.html')
 
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico')
+
 
 @app.route('/partyCreator', methods=['GET'])
 def partyCreator():
@@ -46,6 +49,7 @@ def inputEditor():
     else:
         return render_template('inputEditor.html')
 
+
 @app.route('/gameEngine', methods=['GET'])
 def gameEngine():
     """Game Engine"""
@@ -53,6 +57,7 @@ def gameEngine():
         return render_template('index.jinja2')
     else:
         return render_template('gameEngine.html')
+
 
 @app.route('/newPassword', methods=['GET'])
 def newPassword():
@@ -95,10 +100,15 @@ def signup():
         return jsonify(success=False,
                        msg="Cet email est déjà enregistré!")
 
-    user = User(username=data["username"],
-                email=data["email"],
-                password=data["password"])
-    user.saveUser()
+    try:
+        user = User(username=data["username"],
+                    email=data["email"],
+                    password=data["password"])
+        user.saveUser()
+    except TypeError:
+        return jsonify(success=False,
+                       msg="Charactères non supportés dans le nom \
+                       d'utilisateur")
     return jsonify(success=True,
                    msg="Compte créé! Plus qu'à se connecter 🥳")
 
@@ -148,4 +158,3 @@ def setup():
     Input.dbSetup()
     InputType.dbSetup()
     return "Setup complete"
-
