@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import app
 from hashlib import sha256
+import re
 
 db = SQLAlchemy(app)
 
@@ -15,6 +16,16 @@ class User(db.Model):
     def __init__(self, password, **kwargs):
         super(User, self).__init__(**kwargs)
         self.password = sha256(password.encode('utf-8')).hexdigest()
+
+    @property
+    def username(self):
+        return self._username
+
+    @username.setter
+    def username(self, val):
+        if not re.match(r'^[A-z\d]+$', val):
+            raise TypeError("Unsupported characters in username")
+        self._username = val
 
     @staticmethod
     def dbSetup():
